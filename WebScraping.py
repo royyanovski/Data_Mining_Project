@@ -27,6 +27,10 @@ def get_data(link_list):  # Extracting the data we are interested in.
             shipment_elem = shipment_elem.contents[1]
         if price_elem != None:
             price_elem.contents[1].decompose()
+        if location_elem != None and ',' in location_elem.text:
+            country_only = item_soup.new_tag('span')
+            country_only.string = location_elem.text.strip().split(", ")[-1]
+            location_elem = country_only
 
         chosen_elements = [title_elem, price_elem, location_elem, shipment_elem, freeshipping_elem,  condition_elem]
         for elem in chosen_elements:
