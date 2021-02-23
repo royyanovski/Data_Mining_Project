@@ -1,8 +1,8 @@
 import sys
-
 import requests  # A package for downloading HTML code from a website.
-
 from bs4 import BeautifulSoup  # A package for parsing HTML code.
+import argparse
+
 
 url_address_pattern = 'https://www.ebay.com/sch/i.html?_from=R40&_nkw={}&_sacat=0&LH_TitleDesc=0&_pgn=1'  # The page i'm working on.
 
@@ -39,11 +39,11 @@ def get_data(link_list):  # Extracting the data we are interested in.
         print()
 
 
-def roy_and_roi_webscraper(url):
+def roy_and_roi_webscraper(url, no_of_scraped_pages):
     """Webscraping function for ebay. Running on a pre-determined number of search pages,
     starting from the entered first search page. Output: prints title, price, supplier country,
     and shipping cost for each item."""
-    for page_no in range(2, NO_OF_PAGES_TO_EXAMINE):
+    for page_no in range(2, no_of_scraped_pages+2):
         links = []
         try:
             page = requests.get(url)  # Getting the HTML code.
@@ -64,14 +64,19 @@ def roy_and_roi_webscraper(url):
             url = url[:-1] + str(page_no)
 
 
-def main(url_pattern):
-    for model in SMARTPHONE_MODELS:
-        url_address = url_pattern.format(model)
-        roy_and_roi_webscraper(url_address)
+def main():
+    parser = argparse.ArgumentParser(description='Scrapes product data from ebay')
+    parser.add_argument('search_words', type=str, help='products to search for', nargs='+')
+    parser.add_argument('-p', '--pages', type=int, help='number of pages to scrape for each search', default=1)
+    args = parser.parse_args()
+
+    for model in args.search_words:
+        url_address = url_address_pattern.format(model)
+        roy_and_roi_webscraper(url_address, args.pages)
 
 
 if __name__ == "__main__":
-    main(url_address_pattern)
+    main()
 
 
 
