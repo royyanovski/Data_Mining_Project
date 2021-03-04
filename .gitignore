@@ -1,0 +1,24 @@
+# A file for the creation of a config file
+import json
+
+FILE_PATH = "/Users/royyanovski/data_mining_proj/config_filw.json"
+
+config_dict = {
+    "url_address_pattern": "https://www.ebay.com/sch/i.html?_from=R40&_nkw={}&_sacat=0&LH_TitleDesc=0&_pgn=1",
+    "tags": {
+        "title_tag": "h1", "title_class": "it-ttl",
+        "price_tag": "span", "price_id": "convbidPrice",
+        "location_tag": "div", "location_class": "iti-eu-bld-gry",
+        "shipment_tag": "span", "shipment_class": "sh-svc sh-nwr",
+        "freeship_tag": "span", "freeship_class": "notranslate sh-fr-cst",
+        "condition_tag": "div", "condition_class": "u-flL condText",
+        "title_torm_tag": "span", "title_torm_class": "g-hdn",
+        "each_product_tag": "li", "each_product_class": "s-item",
+        "product_link_tag": "a", "product_link_class": "href"},
+    "constants": {
+        "PRICE_ONLY": 1, "TO_DELETE": 1, "COUNTRY": -1, "FIRST_PAGE": 2, "PAGE_NO": -1}
+    }
+
+
+with open(FILE_PATH, 'w') as cf:
+    json.dump(config_dict, cf)
