@@ -9,7 +9,7 @@ Input:
 1) search words (str)- enter words to search separated by a whitespace (enters the script as a list).
 If a search key is more than one word, use "_" between them.
 2) -p/--pages flag (int)- enter the number of pages you would like to search through, for each of the search words.
-Input pattern: $ python3 WebScraping.py search_key1 search_key2 ... -p page_num
+Input pattern: $ python WebScraping.py search_key1 search_key2 ... -p page_num
 
 Output: The program prints out the following for each search word: product title, price, supplier's country,
 shipping cost, and condition.

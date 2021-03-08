@@ -28,6 +28,9 @@ def get_data(link_list):
         shipment_elem = item_results.find(TAG["shipment_tag"], class_=TAG["shipment_class"])
         freeshipping_elem = item_results.find(TAG["freeship_tag"], class_=TAG["freeship_class"])
         condition_elem = item_results.find(TAG["condition_tag"], class_=TAG["condition_class"])
+        category_elem = item_results.find('span', itemprop='name')
+        seller_elem = item_results.find('div', class_='mbg vi-VR-margBtm3')
+        seller_link = seller_elem.find('a')['href']
 
         title_elem.find(TAG["title_torm_tag"], class_=TAG["title_torm_class"]).decompose()
         if shipment_elem is not None:
@@ -39,10 +42,25 @@ def get_data(link_list):
             country_only.string = location_elem.text.strip().split(", ")[CON["COUNTRY"]]
             location_elem = country_only
 
-        chosen_elements = [title_elem, price_elem, location_elem, shipment_elem, freeshipping_elem,  condition_elem]
+        seller_page = requests.get(seller_link)
+        seller_soup = BeautifulSoup(seller_page.content, 'html.parser')
+        seller_results = seller_soup.find('body')
+        seller_name = item_results.find('span', class_='mbg-nw')
+        posit_feed_pct = seller_results.find('div', class_='perctg')
+        feedback_score = item_results.find('span', class_='mbg-l')
+        clean_feedback_score = feedback_score.text.strip().replace(')', '').replace('(', '')
+
+        chosen_elements = [title_elem, price_elem, location_elem, shipment_elem, freeshipping_elem,  condition_elem, category_elem]
+        seller_elements = [seller_name, posit_feed_pct]
         for elem in chosen_elements:
             if elem is not None:
                 print(elem.text.strip())
+        print()
+        print('Seller:')
+        for elem in seller_elements:
+            if elem is not None:
+                print(elem.text.strip())
+        print(clean_feedback_score)
         print()
 
 
