@@ -28,9 +28,9 @@ def get_data(link_list):
         shipment_elem = item_results.find(TAG["shipment_tag"], class_=TAG["shipment_class"])
         freeshipping_elem = item_results.find(TAG["freeship_tag"], class_=TAG["freeship_class"])
         condition_elem = item_results.find(TAG["condition_tag"], class_=TAG["condition_class"])
-        category_elem = item_results.find('span', itemprop='name')
-        seller_elem = item_results.find('div', class_='mbg vi-VR-margBtm3')
-        seller_link = seller_elem.find('a')['href']
+        category_elem = item_results.find(TAG["category_tag"], itemprop=TAG["category_itemprop"])
+        seller_elem = item_results.find(TAG["seller_tag"], class_=TAG["seller_class"])
+        seller_link = seller_elem.find(TAG["link_tag"])[TAG["link_class"]]
 
         title_elem.find(TAG["title_torm_tag"], class_=TAG["title_torm_class"]).decompose()
         if shipment_elem is not None:
@@ -45,9 +45,9 @@ def get_data(link_list):
         seller_page = requests.get(seller_link)
         seller_soup = BeautifulSoup(seller_page.content, 'html.parser')
         seller_results = seller_soup.find('body')
-        seller_name = item_results.find('span', class_='mbg-nw')
-        posit_feed_pct = seller_results.find('div', class_='perctg')
-        feedback_score = item_results.find('span', class_='mbg-l')
+        seller_name = item_results.find(TAG["sel_name_tag"], class_=TAG["sel_name_class"])
+        posit_feed_pct = seller_results.find(TAG["pos_pct_tag"], class_=TAG["pos_pct_class"])
+        feedback_score = item_results.find(TAG["score_tag"], class_=TAG["score_class"])
         clean_feedback_score = feedback_score.text.strip().replace(')', '').replace('(', '')
 
         chosen_elements = [title_elem, price_elem, location_elem, shipment_elem, freeshipping_elem,  condition_elem, category_elem]
@@ -84,7 +84,7 @@ def roys_webscraper(url, no_of_scraped_pages):
             # and using only the results themselves.
             for product_item in product_items:  # Getting the links for the product pages.
                 try:
-                    link = product_item.find(TAG["product_link_tag"])[TAG["product_link_class"]]  # Extract item links.
+                    link = product_item.find(TAG["link_tag"])[TAG["link_class"]]  # Extract item links.
                 except (TypeError, KeyError):
                     continue
                 else:
