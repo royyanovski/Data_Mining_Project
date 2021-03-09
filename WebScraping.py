@@ -3,11 +3,17 @@ import requests  # A package for downloading HTML code from a website.
 from bs4 import BeautifulSoup  # A package for parsing HTML code.
 import argparse
 import json
+import pymysql.cursors
+
 
 CFG_FILE = "/Users/royyanovski/data_mining_proj/config_filw.json"
 with open(CFG_FILE, 'r') as cf:
     config = json.load(cf)
+PASS_FILE = "/Users/royyanovski/mypass.json"
+with open(PASS_FILE, 'r') as pf:
+    password = json.load(pf)
 
+MY_PASSWORD = password["my_password"]
 CON = config["constants"]
 TAG = config["tags"]
 URL_PATTERN = config["url_address_pattern"]
@@ -91,6 +97,38 @@ def roys_webscraper(url, no_of_scraped_pages):
                     links.append(link)
             get_data(links)
             url = url[:CON["PAGE_NO"]] + str(page_no)
+
+
+def storing_data(chosen_elements_list, seller_elements_list, feedback_score):
+    prod_name = chosen_elements_list[0].text.strip()
+    price = float(chosen_elements_list[1].text.strip().split(' ')[1])
+    country = chosen_elements_list[2].text.strip()
+    if chosen_elements_list[3].text.strip() == 'FREE':
+        ship_cost = 0.0
+    else:
+        ship_cost = float(chosen_elements_list[3].text.strip().split(' ')[1])
+    condition = chosen_elements_list[4].text.strip()
+    category = chosen_elements_list[5].text.strip()
+    sell_name = seller_elements_list[0].text.strip()
+    pos_pct = float(seller_elements_list[1].text.strip().split('%')[0])
+
+    insert_to_products_query = f"""INSERT INTO products (product_name, product_price, origin_country, 
+    shipping_fee, product_condition) VALUES ({prod_name}, {price}, {country}, {ship_cost}, {condition});"""
+
+    insert_to_categories_query = f"""INSERT INTO categories (category) VALUES ({category});"""
+
+    insert_to_sellers_query = f"""INSERT INTO sellers (seller_name, pos_feedback_pct, seller_feedback_score) 
+    VALUES ({sell_name}, {pos_pct}, {int(feedback_score)});"""
+
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 password=MY_PASSWORD,
+                                 database='ebay_products',
+                                 charset='utf8mb4',
+                                 cursorclass=pymysql.cursors.DictCursor)
+    with connection.cursor() as cursor:
+        cursor.execute(insert_to_products_query + insert_to_categories_query + insert_to_sellers_query)
+        connection.commit()
 
 
 def main():
