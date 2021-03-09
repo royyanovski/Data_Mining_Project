@@ -15,7 +15,7 @@ Output: The program prints out the following for each search word: product categ
 shipping cost, and condition, seller name, seller feedback score, and seller positive feedback percentage.
 All prices are in Israeli Shekels (i.e. NIS or ILS).
 * The program can also store the data in a pre-defined database, as such:
-![ERD](/Users/royyanovski/data_mining_proj/Data Mining Project.png)
+![ERD](https://github.com/royyanovski/Data_Mining_Project/blob/master/Data%20Mining%20Project.png?raw=true)
 * __products table__- includes individual product data. 
 Columns:
   1. _product_id (int, pk)_: auto increments a serial no. for each product.
