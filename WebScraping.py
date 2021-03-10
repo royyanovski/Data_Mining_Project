@@ -138,9 +138,12 @@ def storing_data(chosen_elements_list, seller_elements_list, feedback_score):
         prod_id = result['product_id']
         connection.commit()
 
-    insert_to_categories_query = f"""INSERT INTO categories (product_id, category) VALUES ({prod_id}, {category});"""
+    insert_to_categories_query = f"""INSERT INTO categories (product_id, category) VALUES ({prod_id}, {category})
+    WHERE NOT EXISTS (SELECT product_id FROM categories WHERE product_id = prod_id);"""
+
     insert_to_sellers_query = f"""INSERT INTO sellers (product_id, seller_name, pos_feedback_pct, seller_feedback_score) 
-    VALUES ({prod_id}, {sell_name}, {pos_pct}, {int(feedback_score)});"""
+    VALUES ({prod_id}, {sell_name}, {pos_pct}, {int(feedback_score)})
+    WHERE NOT EXISTS (SELECT product_id FROM sellers WHERE product_id = prod_id);"""
 
     with connection.cursor() as cursor:
         cursor.execute(insert_to_categories_query + insert_to_sellers_query)
