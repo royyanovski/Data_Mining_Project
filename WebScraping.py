@@ -113,12 +113,13 @@ def storing_data(chosen_elements_list, seller_elements_list, feedback_score):
     pos_pct = float(seller_elements_list[1].text.strip().split('%')[0])
 
     insert_to_products_query = f"""INSERT INTO products (product_name, product_price, origin_country, 
-    shipping_fee, product_condition) VALUES ({prod_name}, {price}, {country}, {ship_cost}, {condition});"""
+    shipping_fee, product_condition) VALUES ({prod_name}, {price}, {country}, {ship_cost}, {condition})
+    WHERE NOT EXISTS (SELECT product_name, product_price, origin_country FROM products WHERE 
+    product_name = prod_name AND product_price = price AND origin_country = country);"""
 
-    insert_to_categories_query = f"""INSERT INTO categories (category) VALUES ({category});"""
+    get_item_id_query = f"""SELECT * FROM products WHERE 
+    product_name = prod_name AND product_price = price AND origin_country = country"""
 
-    insert_to_sellers_query = f"""INSERT INTO sellers (seller_name, pos_feedback_pct, seller_feedback_score) 
-    VALUES ({sell_name}, {pos_pct}, {int(feedback_score)});"""
 
     connection = pymysql.connect(host='localhost',
                                  user='root',
@@ -126,9 +127,26 @@ def storing_data(chosen_elements_list, seller_elements_list, feedback_score):
                                  database='ebay_products',
                                  charset='utf8mb4',
                                  cursorclass=pymysql.cursors.DictCursor)
+
     with connection.cursor() as cursor:
-        cursor.execute(insert_to_products_query + insert_to_categories_query + insert_to_sellers_query)
+        cursor.execute(insert_to_products_query)
         connection.commit()
+
+    with connection.cursor() as cursor:
+        cursor.execute(get_item_id_query)
+        result = cursor.fetchall()
+        prod_id = result['product_id']
+        connection.commit()
+
+    insert_to_categories_query = f"""INSERT INTO categories (product_id, category) VALUES ({prod_id}, {category});"""
+    insert_to_sellers_query = f"""INSERT INTO sellers (product_id, seller_name, pos_feedback_pct, seller_feedback_score) 
+    VALUES ({prod_id}, {sell_name}, {pos_pct}, {int(feedback_score)});"""
+
+    with connection.cursor() as cursor:
+        cursor.execute(insert_to_categories_query + insert_to_sellers_query)
+        connection.commit()
+
+    connection.close()
 
 
 def main():
