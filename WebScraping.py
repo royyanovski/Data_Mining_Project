@@ -19,54 +19,55 @@ TAG = config["tags"]
 URL_PATTERN = config["url_address_pattern"]
 
 
-def get_data(link_list):
+def get_item_data(item_link):
+    item_page = requests.get(item_link)
+    item_soup = BeautifulSoup(item_page.content, 'html.parser')
+    item_results = item_soup.find(id="Body")
+    title_elem = item_results.find(TAG["title_tag"], class_=TAG["title_class"])
+    price_elem = item_results.find(TAG["price_tag"], id=TAG["price_id"])
+    location_elem = item_results.find(TAG["location_tag"], class_=TAG["location_class"])
+    shipment_elem = item_results.find(TAG["shipment_tag"], class_=TAG["shipment_class"])
+    freeshipping_elem = item_results.find(TAG["freeship_tag"], class_=TAG["freeship_class"])
+    condition_elem = item_results.find(TAG["condition_tag"], class_=TAG["condition_class"])
+    category_elem = item_results.find(TAG["category_tag"], itemprop=TAG["category_itemprop"])
+
+    seller_name = item_results.find(TAG["sel_name_tag"], class_=TAG["sel_name_class"])
+    feedback_score = item_results.find(TAG["score_tag"], class_=TAG["score_class"])
+    clean_feedback_score = feedback_score.text.strip().replace(')', '').replace('(', '')
+
+    title_elem.find(TAG["title_torm_tag"], class_=TAG["title_torm_class"]).decompose()
+    if shipment_elem is not None:
+        shipment_elem = shipment_elem.contents[CON["PRICE_ONLY"]]
+    if price_elem is not None:
+        price_elem.contents[CON["TO_DELETE"]].decompose()
+    if location_elem is not None and ',' in location_elem.text:
+        country_only = item_soup.new_tag('span')
+        country_only.string = location_elem.text.strip().split(", ")[CON["COUNTRY"]]
+        location_elem = country_only
+
+    chosen_elements = [title_elem, price_elem, location_elem, shipment_elem, freeshipping_elem, condition_elem,
+                       category_elem]
+    return chosen_elements, seller_name, clean_feedback_score
+
+
+def concentrating_data(link_list):
     """
     Receives a list of links to product pages in ebay and prints
     their: title, price, sending country, shipping fee, and condition.
     """
     for link in link_list:
-        item_page = requests.get(link)
-        item_soup = BeautifulSoup(item_page.content, 'html.parser')
-        item_results = item_soup.find(id="Body")
-        title_elem = item_results.find(TAG["title_tag"], class_=TAG["title_class"])
-        price_elem = item_results.find(TAG["price_tag"], id=TAG["price_id"])
-        location_elem = item_results.find(TAG["location_tag"], class_=TAG["location_class"])
-        shipment_elem = item_results.find(TAG["shipment_tag"], class_=TAG["shipment_class"])
-        freeshipping_elem = item_results.find(TAG["freeship_tag"], class_=TAG["freeship_class"])
-        condition_elem = item_results.find(TAG["condition_tag"], class_=TAG["condition_class"])
-        category_elem = item_results.find(TAG["category_tag"], itemprop=TAG["category_itemprop"])
-        seller_elem = item_results.find(TAG["seller_tag"], class_=TAG["seller_class"])
-        seller_link = seller_elem.find(TAG["link_tag"])[TAG["link_class"]]
+        prod_data_and_sell_link = get_item_data(link)
+        product_data = prod_data_and_sell_link[0]
+        seller_name = prod_data_and_sell_link[1]
+        seller_score = prod_data_and_sell_link[2]
 
-        title_elem.find(TAG["title_torm_tag"], class_=TAG["title_torm_class"]).decompose()
-        if shipment_elem is not None:
-            shipment_elem = shipment_elem.contents[CON["PRICE_ONLY"]]
-        if price_elem is not None:
-            price_elem.contents[CON["TO_DELETE"]].decompose()
-        if location_elem is not None and ',' in location_elem.text:
-            country_only = item_soup.new_tag('span')
-            country_only.string = location_elem.text.strip().split(", ")[CON["COUNTRY"]]
-            location_elem = country_only
-
-        seller_page = requests.get(seller_link)
-        seller_soup = BeautifulSoup(seller_page.content, 'html.parser')
-        seller_results = seller_soup.find('body')
-        seller_name = item_results.find(TAG["sel_name_tag"], class_=TAG["sel_name_class"])
-        posit_feed_pct = seller_results.find(TAG["pos_pct_tag"], class_=TAG["pos_pct_class"])
-        feedback_score = item_results.find(TAG["score_tag"], class_=TAG["score_class"])
-        clean_feedback_score = feedback_score.text.strip().replace(')', '').replace('(', '')
-
-        chosen_elements = [title_elem, price_elem, location_elem, shipment_elem, freeshipping_elem,  condition_elem, category_elem]
-        seller_elements = [seller_name, posit_feed_pct]
-        for elem in chosen_elements:
+        for elem in product_data:
             if elem is not None:
                 print(elem.text.strip())
         print()
         print('Seller:')
-        for elem in seller_elements:
-            if elem is not None:
-                print(elem.text.strip())
-        print(clean_feedback_score)
+        print(seller_name.text.strip())
+        print(seller_score)
         print()
 
 
@@ -79,47 +80,34 @@ def roys_webscraper(url, no_of_scraped_pages):
     for page_no in range(CON["FIRST_PAGE"], no_of_scraped_pages + CON["FIRST_PAGE"]):
         links = []
         try:
-            page = requests.get(url)  # Getting the HTML code.
+            page = requests.get(url)
         except requests.exceptions.MissingSchema:
             print('Invalid URL address.')
             sys.exit()
         else:
-            soup = BeautifulSoup(page.content, 'html.parser')  # Creating BS object to work on with an HTML parser.
-            results = soup.find(id="mainContent")  # Extracting the results of the ebay search.
-            product_items = results.find_all(TAG["each_product_tag"], class_=TAG["each_product_class"])  # Separating
-            # and using only the results themselves.
-            for product_item in product_items:  # Getting the links for the product pages.
+            soup = BeautifulSoup(page.content, 'html.parser')
+            results = soup.find(id="mainContent")
+            product_items = results.find_all(TAG["each_product_tag"], class_=TAG["each_product_class"])
+
+            for product_item in product_items:
                 try:
-                    link = product_item.find(TAG["link_tag"])[TAG["link_class"]]  # Extract item links.
+                    link = product_item.find(TAG["link_tag"])[TAG["link_class"]]
                 except (TypeError, KeyError):
                     continue
                 else:
                     links.append(link)
-            get_data(links)
+            concentrating_data(links)
             url = url[:CON["PAGE_NO"]] + str(page_no)
 
 
-def storing_data(chosen_elements_list, seller_elements_list, feedback_score):
-    prod_name = chosen_elements_list[0].text.strip()
-    price = float(chosen_elements_list[1].text.strip().split(' ')[1])
-    country = chosen_elements_list[2].text.strip()
-    if chosen_elements_list[3].text.strip() == 'FREE':
-        ship_cost = 0.0
-    else:
-        ship_cost = float(chosen_elements_list[3].text.strip().split(' ')[1])
-    condition = chosen_elements_list[4].text.strip()
-    category = chosen_elements_list[5].text.strip()
-    sell_name = seller_elements_list[0].text.strip()
-    pos_pct = float(seller_elements_list[1].text.strip().split('%')[0])
-
+def sql_execution(prod_name, price, country, ship_cost, condition, category, seller_name, feedback_score):
     insert_to_products_query = f"""INSERT INTO products (product_name, product_price, origin_country, 
-    shipping_fee, product_condition) VALUES ({prod_name}, {price}, {country}, {ship_cost}, {condition})
-    WHERE NOT EXISTS (SELECT product_name, product_price, origin_country FROM products WHERE 
-    product_name = prod_name AND product_price = price AND origin_country = country);"""
+        shipping_fee, product_condition) VALUES ({prod_name}, {price}, {country}, {ship_cost}, {condition})
+        WHERE NOT EXISTS (SELECT product_name, product_price, origin_country FROM products WHERE 
+        product_name = prod_name AND product_price = price AND origin_country = country);"""
 
     get_item_id_query = f"""SELECT * FROM products WHERE 
-    product_name = prod_name AND product_price = price AND origin_country = country"""
-
+        product_name = prod_name AND product_price = price AND origin_country = country"""
 
     connection = pymysql.connect(host='localhost',
                                  user='root',
@@ -139,17 +127,32 @@ def storing_data(chosen_elements_list, seller_elements_list, feedback_score):
         connection.commit()
 
     insert_to_categories_query = f"""INSERT INTO categories (product_id, category) VALUES ({prod_id}, {category})
-    WHERE NOT EXISTS (SELECT product_id FROM categories WHERE product_id = prod_id);"""
+        WHERE NOT EXISTS (SELECT product_id FROM categories WHERE product_id = prod_id);"""
 
     insert_to_sellers_query = f"""INSERT INTO sellers (product_id, seller_name, pos_feedback_pct, seller_feedback_score) 
-    VALUES ({prod_id}, {sell_name}, {pos_pct}, {int(feedback_score)})
-    WHERE NOT EXISTS (SELECT product_id FROM sellers WHERE product_id = prod_id);"""
+        VALUES ({prod_id}, {seller_name}, {int(feedback_score)})
+        WHERE NOT EXISTS (SELECT product_id FROM sellers WHERE product_id = prod_id);"""
 
     with connection.cursor() as cursor:
         cursor.execute(insert_to_categories_query + insert_to_sellers_query)
         connection.commit()
 
     connection.close()
+
+
+def storing_data(chosen_elements_list, sell_name, feedback_score):
+    prod_name = chosen_elements_list[CON["NAME_ELEM"]].text.strip()
+    price = float(chosen_elements_list[CON["PRICE_ELEM"]].text.strip().split(' ')[CON["PRICE_ONLY"]])
+    country = chosen_elements_list[CON["COUNTRY_ELEM"]].text.strip()
+    if chosen_elements_list[CON["SHIPMENT_ELEM"]].text.strip() == 'FREE':
+        ship_cost = 0.0
+    else:
+        ship_cost = float(chosen_elements_list[3].text.strip().split(' ')[CON["PRICE_ONLY"]])
+    condition = chosen_elements_list[CON["CONDITION_ELEM"]].text.strip()
+    category = chosen_elements_list[CON["CATEGORY_ELEM"]].text.strip()
+    seller_name = sell_name.text.strip()
+
+    sql_execution(prod_name, price, country, ship_cost, condition, category, seller_name, feedback_score)
 
 
 def main():
@@ -163,6 +166,8 @@ def main():
     args = parser.parse_args()
 
     for model in args.search_words:
+        if '_' in model:
+            model = " ".join(model.split('_'))
         url_address = URL_PATTERN.format(model)
         roys_webscraper(url_address, args.pages)
 

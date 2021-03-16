@@ -41,11 +41,14 @@ Columns:
 ## Installation
 This repo includes a requirements file for necessary packages.
 In addition, a configuration file includes all constants, tags, and the URL pattern. 
+In 'WebScraping.py', rows 9 and 12 include paths to the configuration file (CFG_FILE) and the password file (PASS_FILE)
+containing the personal password for the SQL execution. The paths of these two files should be changed according to
+their location in the local PC.
 
 ## Usage
 WebScraping.py - Receives a list of search words and a number of pages to search (during each search),
 and returns the data of all the results (products). The data returned are: product description, price, condition,
-shipping fee, and seller country.
+shipping fee, product category, seller country, seller name, and seller rating score.
 
 ## Authors and Support
 Roy Yanovski - yanovskir@gmail.com
