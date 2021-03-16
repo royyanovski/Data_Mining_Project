@@ -71,6 +71,18 @@ def concentrating_data(link_list):
         print()
 
 
+def collect_links(product_items):
+    links = []
+    for product_item in product_items:
+        try:
+            link = product_item.find(TAG["link_tag"])[TAG["link_class"]]
+        except (TypeError, KeyError):
+            continue
+        else:
+            links.append(link)
+    return links
+
+
 def roys_webscraper(url, no_of_scraped_pages):
     """
     Webscraping function for ebay. Running on a pre-determined number of search pages,
@@ -78,7 +90,6 @@ def roys_webscraper(url, no_of_scraped_pages):
     and shipping cost for each item.
     """
     for page_no in range(CON["FIRST_PAGE"], no_of_scraped_pages + CON["FIRST_PAGE"]):
-        links = []
         try:
             page = requests.get(url)
         except requests.exceptions.MissingSchema:
@@ -88,14 +99,7 @@ def roys_webscraper(url, no_of_scraped_pages):
             soup = BeautifulSoup(page.content, 'html.parser')
             results = soup.find(id="mainContent")
             product_items = results.find_all(TAG["each_product_tag"], class_=TAG["each_product_class"])
-
-            for product_item in product_items:
-                try:
-                    link = product_item.find(TAG["link_tag"])[TAG["link_class"]]
-                except (TypeError, KeyError):
-                    continue
-                else:
-                    links.append(link)
+            links = collect_links(product_items)
             concentrating_data(links)
             url = url[:CON["PAGE_NO"]] + str(page_no)
 
