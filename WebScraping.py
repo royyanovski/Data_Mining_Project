@@ -50,7 +50,7 @@ def get_item_data(item_link):
     return chosen_elements, seller_name, clean_feedback_score
 
 
-def concentrating_data(link_list):
+def concentrating_data(link_list, page_no):
     """
     Receives a list of links to product pages in ebay and prints
     their: title, price, sending country, shipping fee, and condition.
@@ -68,6 +68,8 @@ def concentrating_data(link_list):
         print('Seller:')
         print(seller_name.text.strip())
         print(seller_score)
+        print()
+        print(f'Retrieved from page No. {page_no}')
         print()
 
 
@@ -89,6 +91,7 @@ def roys_webscraper(url, no_of_scraped_pages):
     starting from the entered first search page. Output: prints title, price, supplier country,
     and shipping cost for each item.
     """
+    print('Connecting to ebay...')
     for page_no in range(CON["FIRST_PAGE"], no_of_scraped_pages + CON["FIRST_PAGE"]):
         try:
             page = requests.get(url)
@@ -100,15 +103,15 @@ def roys_webscraper(url, no_of_scraped_pages):
             results = soup.find(id="mainContent")
             product_items = results.find_all(TAG["each_product_tag"], class_=TAG["each_product_class"])
             links = collect_links(product_items)
-            concentrating_data(links)
+            concentrating_data(links, page_no-1)
             url = url[:CON["PAGE_NO"]] + str(page_no)
 
 
-def sql_execution(prod_name, price, country, ship_cost, condition, category, seller_name, feedback_score):
+def sql_execution(prod_name, price, country, ship_cost, condition, category, page_no, seller_name, feedback_score):
     insert_to_products_query = f"""INSERT INTO products (product_name, product_price, origin_country, 
-        shipping_fee, product_condition) VALUES ({prod_name}, {price}, {country}, {ship_cost}, {condition})
-        WHERE NOT EXISTS (SELECT product_name, product_price, origin_country FROM products WHERE 
-        product_name = prod_name AND product_price = price AND origin_country = country);"""
+        shipping_fee, product_condition, page_number) VALUES ({prod_name}, {price}, {country}, {ship_cost}, 
+        {condition}, {page_no}) WHERE NOT EXISTS (SELECT product_name, product_price, page_number FROM products 
+        WHERE product_name = prod_name AND product_price = price AND page_number = page_no);"""
 
     get_item_id_query = f"""SELECT * FROM products WHERE 
         product_name = prod_name AND product_price = price AND origin_country = country"""
@@ -144,7 +147,7 @@ def sql_execution(prod_name, price, country, ship_cost, condition, category, sel
     connection.close()
 
 
-def storing_data(chosen_elements_list, sell_name, feedback_score):
+def storing_data(chosen_elements_list, sell_name, feedback_score, page_no):
     prod_name = chosen_elements_list[CON["NAME_ELEM"]].text.strip()
     price = float(chosen_elements_list[CON["PRICE_ELEM"]].text.strip().split(' ')[CON["PRICE_ONLY"]])
     country = chosen_elements_list[CON["COUNTRY_ELEM"]].text.strip()
@@ -156,7 +159,7 @@ def storing_data(chosen_elements_list, sell_name, feedback_score):
     category = chosen_elements_list[CON["CATEGORY_ELEM"]].text.strip()
     seller_name = sell_name.text.strip()
 
-    sql_execution(prod_name, price, country, ship_cost, condition, category, seller_name, feedback_score)
+    sql_execution(prod_name, price, country, ship_cost, condition, category, page_no, seller_name, feedback_score)
 
 
 def main():
