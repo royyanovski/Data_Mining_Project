@@ -20,6 +20,9 @@ URL_PATTERN = config["url_address_pattern"]
 
 
 def get_item_data(item_link):
+    """
+    Receives a link to an item page and returns the collected data.
+    """
     item_page = requests.get(item_link)
     item_soup = BeautifulSoup(item_page.content, 'html.parser')
     item_results = item_soup.find(id="Body")
@@ -52,8 +55,8 @@ def get_item_data(item_link):
 
 def concentrating_data(link_list, page_no):
     """
-    Receives a list of links to product pages in ebay and prints
-    their: title, price, sending country, shipping fee, and condition.
+    Receives a list of links to product pages and the page No., and prints
+    their retrieved data.
     """
     for link in link_list:
         prod_data_and_sell_link = get_item_data(link)
@@ -74,6 +77,9 @@ def concentrating_data(link_list, page_no):
 
 
 def collect_links(product_items):
+    """
+    Extract item page links and returns a list of links.
+    """
     links = []
     for product_item in product_items:
         try:
@@ -108,6 +114,9 @@ def roys_webscraper(url, no_of_scraped_pages):
 
 
 def sql_execution(prod_name, price, country, ship_cost, condition, category, page_no, seller_name, feedback_score):
+    """
+    Executes SQL queries in order to insert product data into a database.
+    """
     insert_to_products_query = f"""INSERT INTO products (product_name, product_price, origin_country, 
         shipping_fee, product_condition, page_number) VALUES ({prod_name}, {price}, {country}, {ship_cost}, 
         {condition}, {page_no}) WHERE NOT EXISTS (SELECT product_name, product_price, page_number FROM products 
@@ -148,6 +157,9 @@ def sql_execution(prod_name, price, country, ship_cost, condition, category, pag
 
 
 def storing_data(chosen_elements_list, sell_name, feedback_score, page_no):
+    """
+    Stores data in a database.
+    """
     prod_name = chosen_elements_list[CON["NAME_ELEM"]].text.strip()
     price = float(chosen_elements_list[CON["PRICE_ELEM"]].text.strip().split(' ')[CON["PRICE_ONLY"]])
     country = chosen_elements_list[CON["COUNTRY_ELEM"]].text.strip()

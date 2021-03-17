@@ -1,28 +1,40 @@
-CREATE DATABASE ebay_products;
-
-USE ebay_products;
-
 CREATE TABLE `products` (
   `product_id` int PRIMARY KEY AUTO_INCREMENT,
+  `seller_id` int,
+  `category_id` int,
+  `country_id` int,
+  `condition_id` int,
   `product_name` varchar(255),
   `product_price` float,
-  `origin_country` varchar(255),
   `shipping_fee` float,
-  `product_condition` varchar(255)
+  `page_number` int
 );
 
 CREATE TABLE `categories` (
-  `product_id` int,
+  `category_id` int PRIMARY KEY AUTO_INCREMENT,
   `category` varchar(255)
 );
 
 CREATE TABLE `sellers` (
-  `product_id` int,
+  `seller_id` int PRIMARY KEY AUTO_INCREMENT,
   `seller_name` varchar(255),
-  `pos_feedback_pct` float,
   `seller_feedback_score` int
 );
 
-ALTER TABLE `products` ADD FOREIGN KEY (`product_id`) REFERENCES `categories` (`product_id`);
+CREATE TABLE `countries` (
+  `country_id` int PRIMARY KEY AUTO_INCREMENT,
+  `origin_country` varchar(255)
+);
 
-ALTER TABLE `products` ADD FOREIGN KEY (`product_id`) REFERENCES `sellers` (`product_id`);
+CREATE TABLE `conditions` (
+  `condition_id` int PRIMARY KEY AUTO_INCREMENT,
+  `product_condition` varchar(255)
+);
+
+ALTER TABLE `products` ADD FOREIGN KEY (`seller_id`) REFERENCES `sellers` (`seller_id`);
+
+ALTER TABLE `products` ADD FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`);
+
+ALTER TABLE `products` ADD FOREIGN KEY (`country_id`) REFERENCES `countries` (`country_id`);
+
+ALTER TABLE `products` ADD FOREIGN KEY (`condition_id`) REFERENCES `conditions` (`condition_id`);
