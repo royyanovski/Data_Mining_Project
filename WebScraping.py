@@ -16,6 +16,7 @@ with open(PASS_FILE, 'r') as pf:
 MY_PASSWORD = password["my_password"]
 CON = config["constants"]
 TAG = config["tags"]
+QUE = config["queries"]
 URL_PATTERN = config["url_address_pattern"]
 
 
@@ -113,17 +114,10 @@ def roys_webscraper(url, no_of_scraped_pages):
             url = url[:CON["PAGE_NO"]] + str(page_no)
 
 
-def sql_execution(prod_name, price, country, ship_cost, condition, category, page_no, seller_name, feedback_score):
+def sql_execution(prod_name, price, country, ship_cost, condition, prod_category, page_no, sell_name, feedback_score):
     """
     Executes SQL queries in order to insert product data into a database.
     """
-    insert_to_products_query = f"""INSERT INTO products (product_name, product_price, origin_country, 
-        shipping_fee, product_condition, page_number) VALUES ({prod_name}, {price}, {country}, {ship_cost}, 
-        {condition}, {page_no}) WHERE NOT EXISTS (SELECT product_name, product_price, page_number FROM products 
-        WHERE product_name = prod_name AND product_price = price AND page_number = page_no);"""
-
-    get_item_id_query = f"""SELECT * FROM products WHERE 
-        product_name = prod_name AND product_price = price AND origin_country = country"""
 
     connection = pymysql.connect(host='localhost',
                                  user='root',
@@ -133,24 +127,48 @@ def sql_execution(prod_name, price, country, ship_cost, condition, category, pag
                                  cursorclass=pymysql.cursors.DictCursor)
 
     with connection.cursor() as cursor:
-        cursor.execute(insert_to_products_query)
+        cursor.execute(QUE["insert_to_conditions"].format(condition, condition))
         connection.commit()
 
     with connection.cursor() as cursor:
-        cursor.execute(get_item_id_query)
+        cursor.execute(QUE["insert_to_countries"].format(country, country))
+        connection.commit()
+
+    with connection.cursor() as cursor:
+        cursor.execute(QUE["insert_to_categories"].format(prod_category, prod_category))
+        connection.commit()
+
+    with connection.cursor() as cursor:
+        cursor.execute(QUE["insert_to_sellers"].format(sell_name, int(feedback_score), sell_name))
+        connection.commit()
+
+    with connection.cursor() as cursor:
+        cursor.execute(QUE["get_seller_id"].format(sell_name))
         result = cursor.fetchall()
-        prod_id = result['product_id']
+        seller_id = result['seller_id']
         connection.commit()
 
-    insert_to_categories_query = f"""INSERT INTO categories (product_id, category) VALUES ({prod_id}, {category})
-        WHERE NOT EXISTS (SELECT product_id FROM categories WHERE product_id = prod_id);"""
-
-    insert_to_sellers_query = f"""INSERT INTO sellers (product_id, seller_name, pos_feedback_pct, seller_feedback_score) 
-        VALUES ({prod_id}, {seller_name}, {int(feedback_score)})
-        WHERE NOT EXISTS (SELECT product_id FROM sellers WHERE product_id = prod_id);"""
+    with connection.cursor() as cursor:
+        cursor.execute(QUE["get_category_id"].format(prod_category))
+        result = cursor.fetchall()
+        category_id = result['category_id']
+        connection.commit()
 
     with connection.cursor() as cursor:
-        cursor.execute(insert_to_categories_query + insert_to_sellers_query)
+        cursor.execute(QUE["get_country_id"].format(country))
+        result = cursor.fetchall()
+        country_id = result['country_id']
+        connection.commit()
+
+    with connection.cursor() as cursor:
+        cursor.execute(QUE["get_condition_id"].format(condition))
+        result = cursor.fetchall()
+        condition_id = result['condition_id']
+        connection.commit()
+
+    with connection.cursor() as cursor:
+        cursor.execute(QUE["insert_to_products"].format(seller_id, category_id, country_id, condition_id, prod_name,
+                                                        price, ship_cost, page_no, prod_name, price, page_no))
         connection.commit()
 
     connection.close()
