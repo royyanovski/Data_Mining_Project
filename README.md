@@ -44,6 +44,8 @@ In addition, a configuration file includes all constants, tags, and the URL patt
 In 'WebScraping.py', rows 9 and 12 include paths to the configuration file (CFG_FILE) and the password file (PASS_FILE)
 containing the personal password for the SQL execution. The paths of these two files should be changed according to
 their location in the local PC.
+The program includes logging to a logging file named 'ebay_scraping.log'. The logging level is set to 'warning' but can
+be changed in case needed (in line 23 of 'WebScraping.py').
 
 ## Usage
 WebScraping.py - Receives a list of search words and a number of pages to search (during each search),
