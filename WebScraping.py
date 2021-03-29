@@ -1,6 +1,6 @@
 import sys
-import requests  # A package for downloading HTML code from a website.
-from bs4 import BeautifulSoup  # A package for parsing HTML code.
+import requests
+from bs4 import BeautifulSoup
 import argparse
 import json
 import pymysql.cursors
@@ -18,6 +18,23 @@ CON = config["constants"]
 TAG = config["tags"]
 QUE = config["queries"]
 URL_PATTERN = config["url_address_pattern"]
+API_URL = config["api_url"]
+API_HEADERS = config["api_headers"]
+
+# Currency API:
+response = requests.request("GET", API_URL, headers=API_HEADERS)
+conversion_dict = response.json()
+
+
+def convert_currency(ils_price):
+    convert_to = [('United States', 'USD'), ('Europe', 'EUR'), ('Great Britain', 'GBP'), ('China', 'CNY'), ('Russia',
+                                                                                                            'RUB')]
+    all_converted = {}
+    for conv_to in convert_to:
+        conv_rate = conversion_dict['rates'][conv_to[CON.CURRENCY]]
+        converted_price = ils_price * conv_rate
+        all_converted[conv_to[CON.COUNTRY]] = converted_price
+    return all_converted
 
 
 def get_item_data(item_link):
