@@ -1,24 +1,55 @@
 # A file for the creation of a config file
 import json
 
-FILE_PATH = "/Users/royyanovski/data_mining_proj/config_filw.json"
+FILE_PATH = "/Users/royyanovski/data_mining_proj/config_file.json"
 
-config_dict = {
-    "url_address_pattern": "https://www.ebay.com/sch/i.html?_from=R40&_nkw={}&_sacat=0&LH_TitleDesc=0&_pgn=1",
-    "tags": {
-        "title_tag": "h1", "title_class": "it-ttl",
-        "price_tag": "span", "price_id": "convbidPrice",
-        "location_tag": "div", "location_class": "iti-eu-bld-gry",
-        "shipment_tag": "span", "shipment_class": "sh-svc sh-nwr",
-        "freeship_tag": "span", "freeship_class": "notranslate sh-fr-cst",
-        "condition_tag": "div", "condition_class": "u-flL condText",
-        "title_torm_tag": "span", "title_torm_class": "g-hdn",
-        "each_product_tag": "li", "each_product_class": "s-item",
-        "product_link_tag": "a", "product_link_class": "href"},
-    "constants": {
-        "PRICE_ONLY": 1, "TO_DELETE": 1, "COUNTRY": -1, "FIRST_PAGE": 2, "PAGE_NO": -1}
-    }
-
+config_dict = {"urls": {"api_url": "https://exchangerate-api.p.rapidapi.com/rapid/latest/ILS",
+                        "url_address_pattern": "https://www.ebay.com/sch/i.html?_from=R40&_nkw={"
+                                               "}&_sacat=0&LH_TitleDesc=0&_pgn=1"},
+               "queries": {
+                   "insert_to_currency": "INSERT INTO currency (product_id, Israeli_Shekel_ILS, US_Dollar_USD, "
+                                         "EU_Euro_EUR, GB_Pound_GBP, China_Yoan_CNY, Russia_Ruble_RUB) VALUES ({}, "
+                                         "{}, {}, "
+                                         "{}, {}, {}, {}));",
+                   "insert_to_products": """INSERT INTO products (seller_id, category_id, country_id, condition_id,
+                   product_name, product_price, shipping_fee, page_number) VALUES ({}, {}, {}, {}, {}, {},  {},
+                   {}) WHERE NOT EXISTS (SELECT product_name, product_price, page_number FROM products WHERE
+                   product_name = {} AND product_price = {} AND page_number = {});""",
+                   "insert_to_sellers": "INSERT INTO sellers (seller_name, seller_feedback_score) VALUES ({}, "
+                                        "{}) WHERE NOT EXISTS (SELECT seller_name FROM sellers WHERE seller_name = {"
+                                        "});",
+                   "insert_to_categories": "INSERT INTO categories (category) VALUES ({}) WHERE NOT EXISTS (SELECT "
+                                           "category FROM categories WHERE category = {});",
+                   "insert_to_countries": "INSERT INTO countries (origin_country) VALUES ({}) WHERE NOT EXISTS ("
+                                          "SELECT origin_country FROM categories WHERE origin_country = {});",
+                   "insert_to_conditions": "INSERT INTO conditions (product_condition) VALUES ({}) WHERE NOT EXISTS ( "
+                                           "SELECT product_condition FROM conditions WHERE product_condition = {});",
+                   "get_seller_id": "SELECT * FROM sellers WHERE seller_name = {}",
+                   "get_category_id": "SELECT * FROM categories WHERE category = {}",
+                   "get_country_id": "SELECT * FROM countries WHERE origin_country = {}",
+                   "get_product_id": "SELECT * FROM products WHERE product_name = {} AND seller_id = {}",
+                   "get_condition_id": "SELECT * FROM conditions WHERE product_condition = {}"
+                   },
+               "tags": {"sel_name_tag": "span", "sel_name_class": "mbg-nw", "seller_tag": "div",
+                        "seller_class": "mbg vi-VR-margBtm3", "category_tag": "span", "category_itemprop": "name",
+                        "score_tag": "span",
+                        "score_class": "mbg-l", "pos_pct_tag": "div", "pos_pct_class": "perctg", "title_tag": "h1",
+                        "title_class": "it-ttl", "price_tag": "span", "price_id": "convbidPrice", "location_tag": "div",
+                        "location_class": "iti-eu-bld-gry", "shipment_tag": "span", "shipment_class": "sh-svc sh-nwr",
+                        "freeship_tag": "span", "freeship_class": "notranslate sh-fr-cst", "condition_tag":
+                            "div", "condition_class": "u-flL condText", "title_torm_tag": "span",
+                        "title_torm_class": "g-hdn", "each_product_tag": "li", "each_product_class": "s-item",
+                        "link_tag": "a", "link_class": "href"
+                        },
+               "constants": {"FROM": 1, "CURRENCY": 2, "PRICE_ONLY": 1, "TO_DELETE": 1, "COUNTRY": -1, "FIRST_PAGE": 2,
+                             "PAGE_NO": -1, "NAME_ELEM": 0, "PRICE_ELEM": 1, "COUNTRY_ELEM": 2,
+                             "SHIPMENT_ELEM": 3, "CONDITION_ELEM": 4, "CATEGORY_ELEM": 5, "ITEM_DATA": 0,
+                             "SELLER_NAME": 1, "SELLER_SCORE": 2, "SUCCESS": 200
+                             }
+               }
 
 with open(FILE_PATH, 'w') as cf:
     json.dump(config_dict, cf)
+venv/include/
+venv/lib/python3.8/site-packages/PyMySQL-1.0.2.dist-info/
+venv/lib/python3.8/site-packages/pymysql/

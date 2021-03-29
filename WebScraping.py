@@ -6,20 +6,21 @@ import json
 import pymysql.cursors
 import logging
 
-CFG_FILE = "/Users/royyanovski/data_mining_proj/config_filw.json"
+CFG_FILE = "/Users/royyanovski/data_mining_proj/config_file.json"
 with open(CFG_FILE, 'r') as cf:
     config = json.load(cf)
 PASS_FILE = "/Users/royyanovski/mypass.json"
 with open(PASS_FILE, 'r') as pf:
-    password = json.load(pf)
+    passwords = json.load(pf)
 
-MY_PASSWORD = password["my_password"]
+MY_PASSWORD = passwords["my_password"]
+URLS = config["urls"]
 CON = config["constants"]
 TAG = config["tags"]
 QUE = config["queries"]
-URL_PATTERN = config["url_address_pattern"]
-API_URL = config["api_url"]
-API_HEADERS = config["api_headers"]
+URL_PATTERN = URLS["url_address_pattern"]
+API_URL = URLS["api_url"]
+API_HEADERS = passwords["api_headers"]
 
 logging.basicConfig(filename='ebay_scraping.log', format='%(asctime)s - %(levelname)s - FILE:%(filename)s - FUNC:%('
                                                          'funcName)s - LINE: %(lineno)d - %(message)s',
@@ -28,17 +29,26 @@ logging.basicConfig(filename='ebay_scraping.log', format='%(asctime)s - %(leveln
 
 # Currency API:
 response = requests.request("GET", API_URL, headers=API_HEADERS)
-conversion_dict = response.json()
+api_check = response
+if api_check.status_code != CON["SUCCESS"]:
+    logging.error(f"Could not connect to the API. Status code: {api_check.status_code}.")
+else:
+    logging.info('API was successfully accessed')
+    conversion_dict = response.json()
 
 
 def convert_currency(ils_price):
-    convert_to = [('United States', 'USD'), ('Europe', 'EUR'), ('Great Britain', 'GBP'), ('China', 'CNY'), ('Russia',
-                                                                                                            'RUB')]
-    all_converted = {}
+    """
+    Uses an external API to calculate different currencies of the price, provided as input.
+    Returns: A dictionary with countries as keys, and the price in their respected currencies.
+    """
+    logging.debug(f"The is: {ils_price}, entered as type: {type(ils_price)}.")
+    convert_to = [('US', 'USD'), ('EU', 'EUR'), ('GB', 'GBP'), ('China', 'CNY'), ('Russia', 'RUB')]
+    all_converted = {'IL': ils_price}
     for conv_to in convert_to:
         conv_rate = conversion_dict['rates'][conv_to[CON.CURRENCY]]
         converted_price = ils_price * conv_rate
-        all_converted[conv_to[CON.COUNTRY]] = converted_price
+        all_converted[conv_to[CON.FROM]] = converted_price
     return all_converted
 
 
@@ -164,7 +174,8 @@ def roys_webscraper(url, no_of_scraped_pages):
             url = url[:CON["PAGE_NO"]] + str(page_no)
 
 
-def sql_execution(prod_name, price, country, ship_cost, condition, prod_category, page_no, sell_name, feedback_score):
+def sql_execution(prod_name, price, country, ship_cost, condition, prod_category, page_no, sell_name, feedback_score,
+                  cur_elem):
     """
     Executes SQL queries in order to insert product data into a database.
     """
@@ -221,6 +232,18 @@ def sql_execution(prod_name, price, country, ship_cost, condition, prod_category
         cursor.execute(QUE["insert_to_products"].format(seller_id, category_id, country_id, condition_id, prod_name,
                                                         price, ship_cost, page_no, prod_name, price, page_no))
         connection.commit()
+
+    with connection.cursor() as cursor:
+        cursor.execute(QUE["get_product_id"].format(prod_name, seller_id))
+        result = cursor.fetchall()
+        prod_id = result['product_id']
+        connection.commit()
+
+    with connection.cursor() as cursor:
+        cursor.execute(QUE["insert_to_currency"].format(prod_id, cur_elem['IL'], cur_elem['US'], cur_elem['EU'],
+                                                        cur_elem['GB'], cur_elem['China'], cur_elem['Russia']))
+        connection.commit()
+
     logging.debug('Entered a record into the categories and sellers tables.')
     connection.close()
 
@@ -239,8 +262,10 @@ def storing_data(chosen_elements_list, sell_name, feedback_score, page_no):
     condition = chosen_elements_list[CON["CONDITION_ELEM"]].text.strip()
     category = chosen_elements_list[CON["CATEGORY_ELEM"]].text.strip()
     seller_name = sell_name.text.strip()
+    currency_elements = convert_currency(price+ship_cost)
     logging.info('Ready to store record via SQL')
-    sql_execution(prod_name, price, country, ship_cost, condition, category, page_no, seller_name, feedback_score)
+    sql_execution(prod_name, price, country, ship_cost, condition, category, page_no, seller_name, feedback_score,
+                  currency_elements)
 
 
 def main():
