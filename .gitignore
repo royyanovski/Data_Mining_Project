@@ -9,10 +9,10 @@ config_dict = {"urls": {"api_url": "https://exchangerate-api.p.rapidapi.com/rapi
                "queries": {
                    "insert_to_currency": """INSERT INTO currency (product_id, Israeli_Shekel_ILS, US_Dollar_USD,
                                          EU_Euro_EUR, GB_Pound_GBP, China_Yoan_CNY, Russia_Ruble_RUB)
-                                         VALUES ({}, {:.3f}, {:.3f}, {:.3f}, {:.3f}, {:.3f}, {:.3f});""",
+                                         VALUES ({}, {}, {}, {}, {}, {}, {});""",
                    "insert_to_products": """INSERT IGNORE INTO products (seller_id, category_id, country_id,
                    condition_id, product_name, product_price, shipping_fee, page_number)
-                   VALUES ({}, {}, {}, {}, '{}', {:.3f},  {:.3f}, {});""",
+                   VALUES ({}, {}, {}, {}, '{}', {},  {}, {});""",
                    "insert_to_sellers": """INSERT IGNORE INTO sellers (seller_name, seller_feedback_score) VALUES ('{}',
                                         {});""",
                    "insert_to_categories": """INSERT IGNORE INTO categories (category) VALUES ('{}');""",
@@ -33,7 +33,7 @@ config_dict = {"urls": {"api_url": "https://exchangerate-api.p.rapidapi.com/rapi
                         "freeship_tag": "span", "freeship_class": "notranslate sh-fr-cst", "condition_tag":
                             "div", "condition_class": "u-flL condText", "title_torm_tag": "span",
                         "title_torm_class": "g-hdn", "each_product_tag": "li", "each_product_class": "s-item",
-                        "link_tag": "a", "link_class": "href"
+                        "link_tag": "a", "link_class": "href", "price_id2": "convbinPrice"
                         },
                "constants": {"FROM": 0, "CURRENCY": 1, "PRICE_ONLY": 1, "TO_DELETE": 1, "COUNTRY": -1, "FIRST_PAGE": 2,
                              "PAGE_NO": -1, "NAME_ELEM": 0, "PRICE_ELEM": 1, "COUNTRY_ELEM": 2,

@@ -1,3 +1,6 @@
+CREATE DATABASE ebay_products;
+USE ebay_products;
+
 CREATE TABLE `products` (
   `product_id` int PRIMARY KEY AUTO_INCREMENT,
   `seller_id` int,
