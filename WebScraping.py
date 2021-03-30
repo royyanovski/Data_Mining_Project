@@ -151,14 +151,20 @@ def storing_data(chosen_elements_list, sell_name, feedback_score, page_no):
     if ',' in chosen_elements_list[CON["PRICE_ELEM"]]:
         preprice = "".join(chosen_elements_list[CON["PRICE_ELEM"]].split(','))
         price = float(preprice.split(' ')[CON["PRICE_ONLY"]])
-    else:
+    elif chosen_elements_list[CON["PRICE_ELEM"]] != 'NULL':
         price = float(chosen_elements_list[CON["PRICE_ELEM"]].split(' ')[CON["PRICE_ONLY"]])
+    else:
+        price = 'NULL'
     country = chosen_elements_list[CON["COUNTRY_ELEM"]]
-    if ',' in chosen_elements_list[CON["SHIPMENT_ELEM"]]:
+    if chosen_elements_list[CON["SHIPMENT_ELEM"]] != 0.0 and ',' in chosen_elements_list[CON["SHIPMENT_ELEM"]]:
         preship = "".join(chosen_elements_list[CON["SHIPMENT_ELEM"]].split(','))
         ship_cost = float(preship.split(' ')[CON["PRICE_ONLY"]])
-    else:
+    elif chosen_elements_list[CON["SHIPMENT_ELEM"]] != 0.0 and chosen_elements_list[CON["SHIPMENT_ELEM"]] != 'NULL':
         ship_cost = float(chosen_elements_list[CON["SHIPMENT_ELEM"]].split(' ')[CON["PRICE_ONLY"]])
+    elif chosen_elements_list[CON["SHIPMENT_ELEM"]] == 0.0:
+        ship_cost = 0.0
+    else:
+        ship_cost = 'NULL'
     if chosen_elements_list[CON["CONDITION_ELEM"]] is not None:
         condition = chosen_elements_list[CON["CONDITION_ELEM"]].text.strip()
     else:
@@ -171,7 +177,10 @@ def storing_data(chosen_elements_list, sell_name, feedback_score, page_no):
         seller_name = sell_name.text.strip()
     else:
         seller_name = 'NULL'
-    currency_elements = convert_currency(price + ship_cost)
+    if price != 'NULL' and ship_cost != 'NULL':
+        currency_elements = convert_currency(price + ship_cost)
+    else:
+        currency_elements = {'IL': 'NULL', 'US': 'NULL', 'EU': 'NULL', 'GB': 'NULL', 'China': 'NULL', 'Russia': 'NULL'}
     logging.info('Ready to store record via SQL')
     sql_execution(prod_name, price, country, ship_cost, condition, category, page_no, seller_name, feedback_score,
                   currency_elements)
@@ -194,6 +203,8 @@ def get_item_data(item_link):
         item_results = item_soup.find(id="Body")
         title_elem = item_results.find(TAG["title_tag"], class_=TAG["title_class"])
         price_elem = item_results.find(TAG["price_tag"], id=TAG["price_id"])
+        if price_elem is None:
+            price_elem = item_results.find(TAG["price_tag"], id=TAG["price_id2"])
         location_elem = item_results.find(TAG["location_tag"], class_=TAG["location_class"])
         shipment_elem = item_results.find(TAG["shipment_tag"], class_=TAG["shipment_class"])
         freeshipping_elem = item_results.find(TAG["freeship_tag"], class_=TAG["freeship_class"])
