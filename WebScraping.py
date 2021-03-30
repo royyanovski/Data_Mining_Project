@@ -65,7 +65,7 @@ def sql_execution(prod_name, price, country, ship_cost, condition, prod_category
         connection.commit()
 
     with connection.cursor() as cursor:
-        query = QUE["insert_to_sellers"].format(sell_name, int(feedback_score))
+        query = QUE["insert_to_sellers"].format(sell_name, feedback_score)
         cursor.execute(query)
         connection.commit()
     logging.debug('Entered a record into the products table.')
@@ -147,18 +147,18 @@ def storing_data(chosen_elements_list, sell_name, feedback_score, page_no):
     """
     Stores data in a database.
     """
-    prod_name = chosen_elements_list[CON["NAME_ELEM"]].text.strip()
-    if ',' in chosen_elements_list[CON["PRICE_ELEM"]].text.strip():
-        preprice = "".join(chosen_elements_list[CON["PRICE_ELEM"]].text.strip().split(','))
+    prod_name = chosen_elements_list[CON["NAME_ELEM"]]
+    if ',' in chosen_elements_list[CON["PRICE_ELEM"]]:
+        preprice = "".join(chosen_elements_list[CON["PRICE_ELEM"]].split(','))
         price = float(preprice.split(' ')[CON["PRICE_ONLY"]])
     else:
-        price = float(chosen_elements_list[CON["PRICE_ELEM"]].text.strip().split(' ')[CON["PRICE_ONLY"]])
-    country = chosen_elements_list[CON["COUNTRY_ELEM"]].text.strip()
-    if ',' in chosen_elements_list[CON["SHIPMENT_ELEM"]].text.strip():
-        preship = "".join(chosen_elements_list[CON["SHIPMENT_ELEM"]].text.strip().split(','))
+        price = float(chosen_elements_list[CON["PRICE_ELEM"]].split(' ')[CON["PRICE_ONLY"]])
+    country = chosen_elements_list[CON["COUNTRY_ELEM"]]
+    if ',' in chosen_elements_list[CON["SHIPMENT_ELEM"]]:
+        preship = "".join(chosen_elements_list[CON["SHIPMENT_ELEM"]].split(','))
         ship_cost = float(preship.split(' ')[CON["PRICE_ONLY"]])
     else:
-        ship_cost = float(chosen_elements_list[CON["SHIPMENT_ELEM"]].text.strip().split(' ')[CON["PRICE_ONLY"]])
+        ship_cost = float(chosen_elements_list[CON["SHIPMENT_ELEM"]].split(' ')[CON["PRICE_ONLY"]])
     if chosen_elements_list[CON["CONDITION_ELEM"]] is not None:
         condition = chosen_elements_list[CON["CONDITION_ELEM"]].text.strip()
     else:
@@ -204,19 +204,21 @@ def get_item_data(item_link):
         feedback_score = item_results.find(TAG["score_tag"], class_=TAG["score_class"])
 
         if feedback_score is not None:
-            feedback_score = feedback_score.text.strip().replace(')', '').replace('(', '')
-            logging.info('Item title retrieved.')
+            feedback_score = int(feedback_score.text.strip().replace(')', '').replace('(', ''))
+            logging.info('Feedback score retrieved.')
         else:
             logging.warning('Seller score was not found.')
             feedback_score = 'NULL'
         if title_elem is not None:
             title_elem.find(TAG["title_torm_tag"], class_=TAG["title_torm_class"]).decompose()
+            title_elem = title_elem.text.strip()
             logging.info('Item title retrieved.')
         else:
             logging.warning('Item title was not found.')
             title_elem = 'NULL'
         if shipment_elem is not None:
             shipment_elem = shipment_elem.contents[CON["PRICE_ONLY"]]
+            shipment_elem = shipment_elem.text.strip()
             logging.info('Shipment price retrieved.')
         else:
             logging.warning('Shipment price was not found.')
@@ -225,6 +227,7 @@ def get_item_data(item_link):
             shipment_elem = 0.0
         if price_elem is not None:
             price_elem.contents[CON["TO_DELETE"]].decompose()
+            price_elem = price_elem.text.strip()
             logging.info('Item price retrieved.')
         else:
             logging.warning('Item price was not found.')
@@ -232,7 +235,7 @@ def get_item_data(item_link):
         if location_elem is not None and ',' in location_elem.text:
             country_only = item_soup.new_tag('span')
             country_only.string = location_elem.text.strip().split(", ")[CON["COUNTRY"]]
-            location_elem = country_only
+            location_elem = country_only.text.strip()
             logging.info('Origin country retrieved.')
         else:
             logging.warning('Item location was not found.')
