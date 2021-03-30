@@ -299,6 +299,27 @@ def ebay_access(url, no_of_scraped_pages):
             url = url[:CON["PAGE_NO"]] + str(page_no)
 
 
+class ScrapeIt:
+    def __init__(self, search_words, no_of_pages):
+        """
+        Initiates a new scraping search, by key words and No. of pages entered through the CLI.
+        """
+        self.search_words = search_words
+        self.no_of_pages = no_of_pages
+
+    def scrape_away(self):
+        """
+        Starts the scraping process for a specific search.
+        """
+        for search_key in self.search_words:
+            if '_' in search_key:
+                search_key = " ".join(search_key.split('_'))
+            logging.debug(f'The key search word/s is/are: {search_key}')
+            url_address = URL_PATTERN.format(search_key)
+            logging.debug(f'The main URL is: {url_address}')
+            ebay_access(url_address, self.no_of_pages)
+
+
 def main():
     """
     Receives CLI arguments for the ebay web scraper.
@@ -312,13 +333,8 @@ def main():
     logging.debug(f'The entered arguments are {args.search_words} as key search words, and {args.pages} as the No. of '
                   f'pages to search.')
 
-    for model in args.search_words:
-        if '_' in model:
-            model = " ".join(model.split('_'))
-        logging.debug(f'The key search word/s is/are: {model}')
-        url_address = URL_PATTERN.format(model)
-        logging.debug(f'The main URL is: {url_address}')
-        ebay_access(url_address, args.pages)
+    new_search = ScrapeIt(args.search_words, args.pages)
+    new_search.scrape_away()
 
 
 if __name__ == "__main__":
