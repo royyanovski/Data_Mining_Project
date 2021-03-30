@@ -26,7 +26,6 @@ logging.basicConfig(filename='ebay_scraping.log', format='%(asctime)s - %(leveln
                                                          'funcName)s - LINE: %(lineno)d - %(message)s',
                     level=logging.WARNING)
 
-
 # Currency API:
 response = requests.request("GET", API_URL, headers=API_HEADERS)
 api_check = response
@@ -35,6 +34,98 @@ if api_check.status_code != CON["SUCCESS"]:
 else:
     logging.info('API was successfully accessed')
     conversion_dict = response.json()
+
+
+def sql_execution(prod_name, price, country, ship_cost, condition, prod_category, page_no, sell_name, feedback_score,
+                  cur_elem):
+    """
+    Executes SQL queries in order to insert product data into a database.
+    """
+
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 password=MY_PASSWORD,
+                                 database='ebay_products',
+                                 charset='utf8mb4',
+                                 cursorclass=pymysql.cursors.DictCursor)
+
+    with connection.cursor() as cursor:
+        query = QUE["insert_to_conditions"].format(condition)
+        cursor.execute(query)
+        connection.commit()
+
+    with connection.cursor() as cursor:
+        query = QUE["insert_to_countries"].format(country)
+        cursor.execute(query)
+        connection.commit()
+
+    with connection.cursor() as cursor:
+        query = QUE["insert_to_categories"].format(prod_category)
+        cursor.execute(query)
+        connection.commit()
+
+    with connection.cursor() as cursor:
+        query = QUE["insert_to_sellers"].format(sell_name, int(feedback_score))
+        cursor.execute(query)
+        connection.commit()
+    logging.debug('Entered a record into the products table.')
+
+    with connection.cursor() as cursor:
+        query = QUE["get_seller_id"].format(sell_name)
+        cursor.execute(query)
+        results = cursor.fetchall()
+        for result in results:
+            seller_id = result['seller_id']
+        connection.commit()
+    logging.debug('retrieved product_id from the products table.')
+
+    with connection.cursor() as cursor:
+        query = QUE["get_category_id"].format(prod_category)
+        cursor.execute(query)
+        results = cursor.fetchall()
+        for result in results:
+            category_id = result['category_id']
+        connection.commit()
+
+    with connection.cursor() as cursor:
+        query = QUE["get_country_id"].format(country)
+        cursor.execute(query)
+        results = cursor.fetchall()
+        for result in results:
+            country_id = result['country_id']
+        connection.commit()
+
+    with connection.cursor() as cursor:
+        query = QUE["get_condition_id"].format(condition)
+        cursor.execute(query)
+        results = cursor.fetchall()
+        for result in results:
+            condition_id = result['condition_id']
+        connection.commit()
+
+    with connection.cursor() as cursor:
+        query = QUE["insert_to_products"].format(seller_id, category_id, country_id, condition_id, prod_name,
+                                                 price, ship_cost, page_no)
+        cursor.execute(query)
+        connection.commit()
+
+    with connection.cursor() as cursor:
+        query = QUE["get_product_id"].format(prod_name, seller_id)
+        cursor.execute(query)
+        results = cursor.fetchall()
+        for result in results:
+            prod_id = result['product_id']
+        connection.commit()
+
+    with connection.cursor() as cursor:
+        query = QUE["insert_to_currency"].format(prod_id, cur_elem['IL'], cur_elem['US'], cur_elem['EU'],
+                                                 cur_elem['GB'], cur_elem['China'], cur_elem['Russia'])
+        cursor.execute(query)
+        connection.commit()
+
+    logging.debug('Entered a record into the categories and sellers tables.')
+    print('A record was successfully stored in db.')
+    connection.close()
 
 
 def convert_currency(ils_price):
@@ -46,10 +137,44 @@ def convert_currency(ils_price):
     convert_to = [('US', 'USD'), ('EU', 'EUR'), ('GB', 'GBP'), ('China', 'CNY'), ('Russia', 'RUB')]
     all_converted = {'IL': ils_price}
     for conv_to in convert_to:
-        conv_rate = conversion_dict['rates'][conv_to[CON.CURRENCY]]
+        conv_rate = conversion_dict['rates'][conv_to[CON['CURRENCY']]]
         converted_price = ils_price * conv_rate
-        all_converted[conv_to[CON.FROM]] = converted_price
+        all_converted[conv_to[CON['FROM']]] = converted_price
     return all_converted
+
+
+def storing_data(chosen_elements_list, sell_name, feedback_score, page_no):
+    """
+    Stores data in a database.
+    """
+    prod_name = chosen_elements_list[CON["NAME_ELEM"]].text.strip()
+    if ',' in chosen_elements_list[CON["PRICE_ELEM"]].text.strip():
+        preprice = "".join(chosen_elements_list[CON["PRICE_ELEM"]].text.strip().split(','))
+        price = float(preprice.split(' ')[CON["PRICE_ONLY"]])
+    else:
+        price = float(chosen_elements_list[CON["PRICE_ELEM"]].text.strip().split(' ')[CON["PRICE_ONLY"]])
+    country = chosen_elements_list[CON["COUNTRY_ELEM"]].text.strip()
+    if ',' in chosen_elements_list[CON["SHIPMENT_ELEM"]].text.strip():
+        preship = "".join(chosen_elements_list[CON["SHIPMENT_ELEM"]].text.strip().split(','))
+        ship_cost = float(preship.split(' ')[CON["PRICE_ONLY"]])
+    else:
+        ship_cost = float(chosen_elements_list[CON["SHIPMENT_ELEM"]].text.strip().split(' ')[CON["PRICE_ONLY"]])
+    if chosen_elements_list[CON["CONDITION_ELEM"]] is not None:
+        condition = chosen_elements_list[CON["CONDITION_ELEM"]].text.strip()
+    else:
+        condition = 'NULL'
+    if chosen_elements_list[CON["CATEGORY_ELEM"]] is not None:
+        category = chosen_elements_list[CON["CATEGORY_ELEM"]].text.strip()
+    else:
+        category = 'NULL'
+    if sell_name is not None:
+        seller_name = sell_name.text.strip()
+    else:
+        seller_name = 'NULL'
+    currency_elements = convert_currency(price + ship_cost)
+    logging.info('Ready to store record via SQL')
+    sql_execution(prod_name, price, country, ship_cost, condition, category, page_no, seller_name, feedback_score,
+                  currency_elements)
 
 
 def get_item_data(item_link):
@@ -83,28 +208,37 @@ def get_item_data(item_link):
             logging.info('Item title retrieved.')
         else:
             logging.warning('Seller score was not found.')
+            feedback_score = 'NULL'
         if title_elem is not None:
             title_elem.find(TAG["title_torm_tag"], class_=TAG["title_torm_class"]).decompose()
             logging.info('Item title retrieved.')
         else:
             logging.warning('Item title was not found.')
+            title_elem = 'NULL'
         if shipment_elem is not None:
             shipment_elem = shipment_elem.contents[CON["PRICE_ONLY"]]
             logging.info('Shipment price retrieved.')
         else:
             logging.warning('Shipment price was not found.')
+            shipment_elem = 'NULL'
+        if freeshipping_elem is not None and freeshipping_elem.text.strip() == 'FREE':
+            shipment_elem = 0.0
         if price_elem is not None:
             price_elem.contents[CON["TO_DELETE"]].decompose()
             logging.info('Item price retrieved.')
         else:
             logging.warning('Item price was not found.')
+            price_elem = 'NULL'
         if location_elem is not None and ',' in location_elem.text:
             country_only = item_soup.new_tag('span')
             country_only.string = location_elem.text.strip().split(", ")[CON["COUNTRY"]]
             location_elem = country_only
             logging.info('Origin country retrieved.')
+        else:
+            logging.warning('Item location was not found.')
+            location_elem = 'NULL'
 
-        chosen_elements = [title_elem, price_elem, location_elem, shipment_elem, freeshipping_elem, condition_elem,
+        chosen_elements = [title_elem, price_elem, location_elem, shipment_elem, condition_elem,
                            category_elem]
         return chosen_elements, seller_name, feedback_score
 
@@ -120,16 +254,7 @@ def concentrating_data(link_list, page_no):
         seller_name = prod_data_and_sell_link[CON["SELLER_NAME"]]
         seller_score = prod_data_and_sell_link[CON["SELLER_SCORE"]]
 
-        for elem in product_data:
-            if elem is not None:
-                print(elem.text.strip())
-        print()
-        print('Seller:')
-        print(seller_name.text.strip())
-        print(seller_score)
-        print()
-        print(f'Retrieved from page No. {page_no}')
-        print()
+        storing_data(product_data, seller_name, seller_score, page_no)
 
 
 def collect_links(product_items):
@@ -149,7 +274,7 @@ def collect_links(product_items):
     return links
 
 
-def roys_webscraper(url, no_of_scraped_pages):
+def ebay_access(url, no_of_scraped_pages):
     """
     Webscraping function for ebay. Running on a pre-determined number of search pages,
     starting from the entered first search page. Output: prints title, price, supplier country,
@@ -174,100 +299,6 @@ def roys_webscraper(url, no_of_scraped_pages):
             url = url[:CON["PAGE_NO"]] + str(page_no)
 
 
-def sql_execution(prod_name, price, country, ship_cost, condition, prod_category, page_no, sell_name, feedback_score,
-                  cur_elem):
-    """
-    Executes SQL queries in order to insert product data into a database.
-    """
-
-    connection = pymysql.connect(host='localhost',
-                                 user='root',
-                                 password=MY_PASSWORD,
-                                 database='ebay_products',
-                                 charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
-
-    with connection.cursor() as cursor:
-        cursor.execute(QUE["insert_to_conditions"].format(condition, condition))
-        connection.commit()
-
-    with connection.cursor() as cursor:
-        cursor.execute(QUE["insert_to_countries"].format(country, country))
-        connection.commit()
-
-    with connection.cursor() as cursor:
-        cursor.execute(QUE["insert_to_categories"].format(prod_category, prod_category))
-        connection.commit()
-
-    with connection.cursor() as cursor:
-        cursor.execute(QUE["insert_to_sellers"].format(sell_name, int(feedback_score), sell_name))
-        connection.commit()
-    logging.debug('Entered a record into the products table.')
-    with connection.cursor() as cursor:
-        cursor.execute(QUE["get_seller_id"].format(sell_name))
-        result = cursor.fetchall()
-        seller_id = result['seller_id']
-        connection.commit()
-    logging.debug('retrieved product_id from the products table.')
-
-    with connection.cursor() as cursor:
-        cursor.execute(QUE["get_category_id"].format(prod_category))
-        result = cursor.fetchall()
-        category_id = result['category_id']
-        connection.commit()
-
-    with connection.cursor() as cursor:
-        cursor.execute(QUE["get_country_id"].format(country))
-        result = cursor.fetchall()
-        country_id = result['country_id']
-        connection.commit()
-
-    with connection.cursor() as cursor:
-        cursor.execute(QUE["get_condition_id"].format(condition))
-        result = cursor.fetchall()
-        condition_id = result['condition_id']
-        connection.commit()
-
-    with connection.cursor() as cursor:
-        cursor.execute(QUE["insert_to_products"].format(seller_id, category_id, country_id, condition_id, prod_name,
-                                                        price, ship_cost, page_no, prod_name, price, page_no))
-        connection.commit()
-
-    with connection.cursor() as cursor:
-        cursor.execute(QUE["get_product_id"].format(prod_name, seller_id))
-        result = cursor.fetchall()
-        prod_id = result['product_id']
-        connection.commit()
-
-    with connection.cursor() as cursor:
-        cursor.execute(QUE["insert_to_currency"].format(prod_id, cur_elem['IL'], cur_elem['US'], cur_elem['EU'],
-                                                        cur_elem['GB'], cur_elem['China'], cur_elem['Russia']))
-        connection.commit()
-
-    logging.debug('Entered a record into the categories and sellers tables.')
-    connection.close()
-
-
-def storing_data(chosen_elements_list, sell_name, feedback_score, page_no):
-    """
-    Stores data in a database.
-    """
-    prod_name = chosen_elements_list[CON["NAME_ELEM"]].text.strip()
-    price = float(chosen_elements_list[CON["PRICE_ELEM"]].text.strip().split(' ')[CON["PRICE_ONLY"]])
-    country = chosen_elements_list[CON["COUNTRY_ELEM"]].text.strip()
-    if chosen_elements_list[CON["SHIPMENT_ELEM"]].text.strip() == 'FREE':
-        ship_cost = 0.0
-    else:
-        ship_cost = float(chosen_elements_list[3].text.strip().split(' ')[CON["PRICE_ONLY"]])
-    condition = chosen_elements_list[CON["CONDITION_ELEM"]].text.strip()
-    category = chosen_elements_list[CON["CATEGORY_ELEM"]].text.strip()
-    seller_name = sell_name.text.strip()
-    currency_elements = convert_currency(price+ship_cost)
-    logging.info('Ready to store record via SQL')
-    sql_execution(prod_name, price, country, ship_cost, condition, category, page_no, seller_name, feedback_score,
-                  currency_elements)
-
-
 def main():
     """
     Receives CLI arguments for the ebay web scraper.
@@ -287,7 +318,7 @@ def main():
         logging.debug(f'The key search word/s is/are: {model}')
         url_address = URL_PATTERN.format(model)
         logging.debug(f'The main URL is: {url_address}')
-        roys_webscraper(url_address, args.pages)
+        ebay_access(url_address, args.pages)
 
 
 if __name__ == "__main__":

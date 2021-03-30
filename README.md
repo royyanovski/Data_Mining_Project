@@ -15,7 +15,7 @@ Output: The program stores the following in a database, for each search word: pr
 price, supplier's country, search page No., shipping cost, and condition, seller name, seller feedback score.
 The prices can be found in different currencies, converted by an up-to-date API ('ExchangeRate-API' from 'rapidapi.com').
 
-* As mentioned, the program stores the data in a pre-defined database, with the following structure:
+* As mentioned, the program stores the data in a pre-defined database (named 'ebay_products'), with the following structure:
 ![ERD](https://github.com/royyanovski/Data_Mining_Project/blob/master/Data%20Mining%20Project.png?raw=true)
 (SQL script for DB creation can also be found in this repo)
 
@@ -80,10 +80,13 @@ WebScraping.py - Receives a list of search words and a number of pages to search
 and returns the data of all the results (products). The data returned are: product description, price, condition,
 shipping fee, product category, seller country, seller name, and seller rating score.
 
+There are 7 functions in the program and 1 main function, calling each other in the following order: 
+1. main => 2. ebay_access (=>  3. collect_links) => 4. concentrating_data => 5. get_item_data => 6. storing_data (=>  7. convert_currency) => 8. sql_execution  
+                                                   
 ## Authors and Support
 Roy Yanovski - yanovskir@gmail.com
 
 ## Project status
 Project Completed.
 
-Last Update: 29.03.2021.
+Last Update: 30.03.2021.

@@ -4,7 +4,7 @@ CREATE TABLE `products` (
   `category_id` int,
   `country_id` int,
   `condition_id` int,
-  `product_name` varchar(255),
+  `product_name` varchar(255) UNIQUE,
   `product_price` float,
   `shipping_fee` float,
   `page_number` int
@@ -12,23 +12,23 @@ CREATE TABLE `products` (
 
 CREATE TABLE `categories` (
   `category_id` int PRIMARY KEY AUTO_INCREMENT,
-  `category` varchar(255)
+  `category` varchar(255) UNIQUE
 );
 
 CREATE TABLE `sellers` (
   `seller_id` int PRIMARY KEY AUTO_INCREMENT,
-  `seller_name` varchar(255),
+  `seller_name` varchar(255) UNIQUE,
   `seller_feedback_score` int
 );
 
 CREATE TABLE `countries` (
   `country_id` int PRIMARY KEY AUTO_INCREMENT,
-  `origin_country` varchar(255)
+  `origin_country` varchar(255) UNIQUE
 );
 
 CREATE TABLE `conditions` (
   `condition_id` int PRIMARY KEY AUTO_INCREMENT,
-  `product_condition` varchar(255)
+  `product_condition` varchar(255) UNIQUE
 );
 
 CREATE TABLE `currency` (
