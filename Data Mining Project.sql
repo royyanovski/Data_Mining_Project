@@ -7,7 +7,7 @@ CREATE TABLE `products` (
   `category_id` int,
   `country_id` int,
   `condition_id` int,
-  `product_name` varchar(255) UNIQUE,
+  `product_name` varchar(255),
   `product_price` decimal(10,3),
   `shipping_fee` decimal(10,3),
   `page_number` int
