@@ -1,0 +1,146 @@
+2021-03-31 11:51:50,096 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 283 - Could not find item page link.
+2021-03-31 11:57:43,431 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 283 - Could not find item page link.
+2021-03-31 12:33:01,771 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 283 - Could not find item page link.
+2021-03-31 12:54:06,911 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 283 - Could not find item page link.
+2021-03-31 13:06:26,731 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 283 - Could not find item page link.
+2021-03-31 14:20:40,284 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 268 - Could not find item page link.
+2021-03-31 14:44:11,297 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 269 - Could not find item page link.
+2021-03-31 14:53:03,744 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 269 - Could not find item page link.
+2021-03-31 14:54:06,828 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 270 - Could not find item page link.
+2021-03-31 15:09:53,197 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 270 - Could not find item page link.
+2021-03-31 15:29:04,011 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 270 - Could not find item page link.
+2021-03-31 15:41:16,555 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 270 - Could not find item page link.
+2021-03-31 15:45:15,630 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 270 - Could not find item page link.
+2021-03-31 15:48:22,821 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 270 - Could not find item page link.
+2021-03-31 15:49:45,136 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 270 - Could not find item page link.
+2021-03-31 15:51:12,465 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 270 - Could not find item page link.
+2021-03-31 16:22:20,325 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 288 - Could not find item page link.
+2021-03-31 16:23:34,973 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 288 - Could not find item page link.
+2021-03-31 16:24:31,022 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 288 - Could not find item page link.
+2021-03-31 16:24:39,294 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:24:42,442 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:24:42,445 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:24:47,493 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:24:47,495 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:24:47,498 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:24:51,327 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:24:51,333 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:24:55,048 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:24:55,049 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:24:55,049 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:24:55,051 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:24:58,756 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:24:58,759 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:24:58,760 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:24:58,761 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:02,947 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:02,948 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:02,949 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:06,450 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:06,450 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:06,451 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:06,452 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:13,266 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:13,270 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:13,271 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:16,555 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:16,557 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:16,562 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:16,563 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:20,368 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:20,369 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:20,370 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:25:20,371 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:26:33,810 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 288 - Could not find item page link.
+2021-03-31 16:26:58,835 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:26:58,836 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:26:58,836 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:26:58,837 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:27:30,354 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:27:30,354 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:27:30,355 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:27:36,774 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:27:36,775 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:27:36,775 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:27:36,780 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:27:42,227 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:27:42,227 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:27:42,228 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:27:42,228 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:41:29,497 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 289 - Could not find item page link.
+2021-03-31 16:44:35,484 - WARNING - FILE:WebScraping.py - FUNC:collect_links - LINE: 289 - Could not find item page link.
+2021-03-31 16:45:38,097 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:45:38,106 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:45:38,112 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:45:40,881 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:45:40,882 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:45:40,883 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:45:46,129 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:45:46,133 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:45:46,136 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:45:55,073 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:45:55,074 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:45:55,076 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:45:55,076 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:04,426 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:04,433 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:04,438 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:09,885 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:09,888 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:09,891 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:13,796 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:13,801 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:13,803 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:13,804 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:18,723 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:18,725 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:18,726 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:18,727 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:21,648 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:21,651 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:21,652 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:24,549 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:24,550 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:24,551 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:24,552 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:27,753 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:27,756 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:27,759 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:29,945 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:29,946 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:29,946 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:29,947 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:32,613 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:32,614 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:32,617 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:35,527 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:35,528 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:35,529 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:35,532 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:38,207 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:38,208 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:38,210 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:41,147 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:41,148 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:41,149 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:43,973 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:43,974 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:43,976 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:43,977 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:46,760 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:46,760 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:46,761 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:49,653 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:49,654 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:49,655 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:55,529 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:55,530 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:55,531 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:58,327 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:58,328 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:46:58,328 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:47:01,990 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:47:02,004 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:47:07,468 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:47:07,474 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
+2021-03-31 16:47:07,478 - WARNING - FILE:WebScraping.py - FUNC:sql_execution - LINE: 72 - Identical value found in unique field. No new entry.
