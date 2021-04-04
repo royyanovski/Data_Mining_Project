@@ -207,60 +207,61 @@ def get_item_data(item_link):
         logging.info('Item page was successfully accessed')
         item_soup = BeautifulSoup(item_page.content, 'html.parser')
         item_results = item_soup.find(id="Body")
-        title_elem = item_results.find(TAG["title_tag"], class_=TAG["title_class"])
-        price_elem = item_results.find(TAG["price_tag"], id=TAG["price_id"])
-        if price_elem is None:
-            price_elem = item_results.find(TAG["price_tag"], id=TAG["price_id2"])
-        location_elem = item_results.find(TAG["location_tag"], class_=TAG["location_class"])
-        shipment_elem = item_results.find(TAG["shipment_tag"], class_=TAG["shipment_class"])
-        freeshipping_elem = item_results.find(TAG["freeship_tag"], class_=TAG["freeship_class"])
-        condition_elem = item_results.find(TAG["condition_tag"], class_=TAG["condition_class"])
-        category_elem = item_results.find(TAG["category_tag"], itemprop=TAG["category_itemprop"])
+        if item_results is not None:
+            title_elem = item_results.find(TAG["title_tag"], class_=TAG["title_class"])
+            price_elem = item_results.find(TAG["price_tag"], id=TAG["price_id"])
+            if price_elem is None:
+                price_elem = item_results.find(TAG["price_tag"], id=TAG["price_id2"])
+            location_elem = item_results.find(TAG["location_tag"], class_=TAG["location_class"])
+            shipment_elem = item_results.find(TAG["shipment_tag"], class_=TAG["shipment_class"])
+            freeshipping_elem = item_results.find(TAG["freeship_tag"], class_=TAG["freeship_class"])
+            condition_elem = item_results.find(TAG["condition_tag"], class_=TAG["condition_class"])
+            category_elem = item_results.find(TAG["category_tag"], itemprop=TAG["category_itemprop"])
 
-        seller_name = item_results.find(TAG["sel_name_tag"], class_=TAG["sel_name_class"])
-        feedback_score = item_results.find(TAG["score_tag"], class_=TAG["score_class"])
+            seller_name = item_results.find(TAG["sel_name_tag"], class_=TAG["sel_name_class"])
+            feedback_score = item_results.find(TAG["score_tag"], class_=TAG["score_class"])
 
-        if feedback_score is not None:
-            feedback_score = int(feedback_score.text.strip().replace(')', '').replace('(', ''))
-            logging.info('Feedback score retrieved.')
-        else:
-            logging.warning('Seller score was not found.')
-            feedback_score = 'NULL'
-        if title_elem is not None:
-            title_elem.find(TAG["title_torm_tag"], class_=TAG["title_torm_class"]).decompose()
-            title_elem = title_elem.text.strip()
-            logging.info('Item title retrieved.')
-        else:
-            logging.warning('Item title was not found.')
-            title_elem = 'NULL'
-        if shipment_elem is not None:
-            shipment_elem = shipment_elem.contents[CON["PRICE_ONLY"]]
-            shipment_elem = shipment_elem.text.strip()
-            logging.info('Shipment price retrieved.')
-        else:
-            logging.warning('Shipment price was not found.')
-            shipment_elem = 'NULL'
-        if freeshipping_elem is not None and freeshipping_elem.text.strip() == 'FREE':
-            shipment_elem = 0.0
-        if price_elem is not None:
-            price_elem.contents[CON["TO_DELETE"]].decompose()
-            price_elem = price_elem.text.strip()
-            logging.info('Item price retrieved.')
-        else:
-            logging.warning('Item price was not found.')
-            price_elem = 'NULL'
-        if location_elem is not None and ',' in location_elem.text:
-            country_only = item_soup.new_tag('span')
-            country_only.string = location_elem.text.strip().split(", ")[CON["COUNTRY"]]
-            location_elem = country_only.text.strip()
-            logging.info('Origin country retrieved.')
-        else:
-            logging.warning('Item location was not found.')
-            location_elem = 'NULL'
+            if feedback_score is not None:
+                feedback_score = int(feedback_score.text.strip().replace(')', '').replace('(', ''))
+                logging.info('Feedback score retrieved.')
+            else:
+                logging.warning('Seller score was not found.')
+                feedback_score = 'NULL'
+            if title_elem is not None:
+                title_elem.find(TAG["title_torm_tag"], class_=TAG["title_torm_class"]).decompose()
+                title_elem = title_elem.text.strip()
+                logging.info('Item title retrieved.')
+            else:
+                logging.warning('Item title was not found.')
+                title_elem = 'NULL'
+            if shipment_elem is not None:
+                shipment_elem = shipment_elem.contents[CON["PRICE_ONLY"]]
+                shipment_elem = shipment_elem.text.strip()
+                logging.info('Shipment price retrieved.')
+            else:
+                logging.warning('Shipment price was not found.')
+                shipment_elem = 'NULL'
+            if freeshipping_elem is not None and freeshipping_elem.text.strip() == 'FREE':
+                shipment_elem = 0.0
+            if price_elem is not None:
+                price_elem.contents[CON["TO_DELETE"]].decompose()
+                price_elem = price_elem.text.strip()
+                logging.info('Item price retrieved.')
+            else:
+                logging.warning('Item price was not found.')
+                price_elem = 'NULL'
+            if location_elem is not None and ',' in location_elem.text:
+                country_only = item_soup.new_tag('span')
+                country_only.string = location_elem.text.strip().split(", ")[CON["COUNTRY"]]
+                location_elem = country_only.text.strip()
+                logging.info('Origin country retrieved.')
+            else:
+                logging.warning('Item location was not found.')
+                location_elem = 'NULL'
 
-        chosen_elements = [title_elem, price_elem, location_elem, shipment_elem, condition_elem,
-                           category_elem]
-        return chosen_elements, seller_name, feedback_score
+            chosen_elements = [title_elem, price_elem, location_elem, shipment_elem, condition_elem,
+                               category_elem]
+            return chosen_elements, seller_name, feedback_score
 
 
 def concentrating_data(link_list, page_no):
