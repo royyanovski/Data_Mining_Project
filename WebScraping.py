@@ -157,39 +157,58 @@ def storing_data(chosen_elements_list, sell_name, feedback_score, page_no):
     if ',' in chosen_elements_list[CON["PRICE_ELEM"]]:
         preprice = "".join(chosen_elements_list[CON["PRICE_ELEM"]].split(','))
         price = float(preprice.split(' ')[CON["PRICE_ONLY"]])
-    elif chosen_elements_list[CON["PRICE_ELEM"]] != 'NULL':
-        price = float(chosen_elements_list[CON["PRICE_ELEM"]].split(' ')[CON["PRICE_ONLY"]])
     else:
-        price = 'NULL'
+        price = float(chosen_elements_list[CON["PRICE_ELEM"]].split(' ')[CON["PRICE_ONLY"]])
     country = chosen_elements_list[CON["COUNTRY_ELEM"]]
     if chosen_elements_list[CON["SHIPMENT_ELEM"]] != 0.0 and ',' in chosen_elements_list[CON["SHIPMENT_ELEM"]]:
         preship = "".join(chosen_elements_list[CON["SHIPMENT_ELEM"]].split(','))
         ship_cost = float(preship.split(' ')[CON["PRICE_ONLY"]])
-    elif chosen_elements_list[CON["SHIPMENT_ELEM"]] != 0.0 and chosen_elements_list[CON["SHIPMENT_ELEM"]] != 'NULL':
+    elif chosen_elements_list[CON["SHIPMENT_ELEM"]] != 0.0:
         ship_cost = float(chosen_elements_list[CON["SHIPMENT_ELEM"]].split(' ')[CON["PRICE_ONLY"]])
-    elif chosen_elements_list[CON["SHIPMENT_ELEM"]] == 0.0:
+    else:
         ship_cost = 0.0
-    else:
-        ship_cost = 'NULL'
-    if chosen_elements_list[CON["CONDITION_ELEM"]] is not None:
-        condition = chosen_elements_list[CON["CONDITION_ELEM"]].text.strip()
-    else:
-        condition = 'NULL'
-    if chosen_elements_list[CON["CATEGORY_ELEM"]] is not None:
-        category = chosen_elements_list[CON["CATEGORY_ELEM"]].text.strip()
-    else:
-        category = 'NULL'
-    if sell_name is not None:
-        seller_name = sell_name.text.strip()
-    else:
-        seller_name = 'NULL'
-    if price != 'NULL' and ship_cost != 'NULL':
-        currency_elements = convert_currency(price + ship_cost)
-    else:
-        currency_elements = {'IL': 'NULL', 'US': 'NULL', 'EU': 'NULL', 'GB': 'NULL', 'China': 'NULL', 'Russia': 'NULL'}
+    condition = chosen_elements_list[CON["CONDITION_ELEM"]].text.strip()
+    category = chosen_elements_list[CON["CATEGORY_ELEM"]].text.strip()
+    seller_name = sell_name.text.strip()
+    currency_elements = convert_currency(price + ship_cost)
     logging.info('Ready to store record via SQL')
+
     sql_execution(prod_name, price, country, ship_cost, condition, category, page_no, seller_name, feedback_score,
                   currency_elements)
+
+
+def element_parsing(title_elem, price_elem, location_elem, condition_elem, category_elem, seller_name, feedback_score,
+                    shipment_elem, freeshipping_elem, item_soup):
+    """
+    Gets all the scraped elements and parse them.
+    """
+    feedback_score = int(feedback_score.text.strip().replace(')', '').replace('(', ''))
+    logging.info('Feedback score retrieved.')
+    title_elem.find(TAG["title_torm_tag"], class_=TAG["title_torm_class"]).decompose()
+    title_elem = title_elem.text.strip()
+    logging.info('Item title retrieved.')
+    if shipment_elem is not None:
+        shipment_elem = shipment_elem.contents[CON["PRICE_ONLY"]]
+        shipment_elem = shipment_elem.text.strip()
+        logging.info('Shipment price retrieved.')
+    if freeshipping_elem is not None and freeshipping_elem.text.strip() == 'FREE':
+        shipment_elem = 0.0
+    price_elem.contents[CON["TO_DELETE"]].decompose()
+    price_elem = price_elem.text.strip()
+    logging.info('Item price retrieved.')
+    if ',' in location_elem.text:
+        country_only = item_soup.new_tag('span')
+        country_only.string = location_elem.text.strip().split(", ")[CON["COUNTRY"]]
+        location_elem = country_only.text.strip()
+        logging.info('Origin country retrieved.')
+    else:
+        location_elem = location_elem.text.strip()
+        logging.info('Origin country retrieved.')
+
+    chosen_elements = [title_elem, price_elem, location_elem, shipment_elem, condition_elem,
+                       category_elem]
+
+    return chosen_elements, seller_name, feedback_score
 
 
 def get_item_data(item_link):
@@ -221,61 +240,35 @@ def get_item_data(item_link):
             seller_name = item_results.find(TAG["sel_name_tag"], class_=TAG["sel_name_class"])
             feedback_score = item_results.find(TAG["score_tag"], class_=TAG["score_class"])
 
-            if feedback_score is not None:
-                feedback_score = int(feedback_score.text.strip().replace(')', '').replace('(', ''))
-                logging.info('Feedback score retrieved.')
-            else:
-                logging.warning('Seller score was not found.')
-                feedback_score = 'NULL'
-            if title_elem is not None:
-                title_elem.find(TAG["title_torm_tag"], class_=TAG["title_torm_class"]).decompose()
-                title_elem = title_elem.text.strip()
-                logging.info('Item title retrieved.')
-            else:
-                logging.warning('Item title was not found.')
-                title_elem = 'NULL'
-            if shipment_elem is not None:
-                shipment_elem = shipment_elem.contents[CON["PRICE_ONLY"]]
-                shipment_elem = shipment_elem.text.strip()
-                logging.info('Shipment price retrieved.')
-            else:
-                logging.warning('Shipment price was not found.')
-                shipment_elem = 'NULL'
-            if freeshipping_elem is not None and freeshipping_elem.text.strip() == 'FREE':
-                shipment_elem = 0.0
-            if price_elem is not None:
-                price_elem.contents[CON["TO_DELETE"]].decompose()
-                price_elem = price_elem.text.strip()
-                logging.info('Item price retrieved.')
-            else:
-                logging.warning('Item price was not found.')
-                price_elem = 'NULL'
-            if location_elem is not None and ',' in location_elem.text:
-                country_only = item_soup.new_tag('span')
-                country_only.string = location_elem.text.strip().split(", ")[CON["COUNTRY"]]
-                location_elem = country_only.text.strip()
-                logging.info('Origin country retrieved.')
-            else:
-                logging.warning('Item location was not found.')
-                location_elem = 'NULL'
-
-            chosen_elements = [title_elem, price_elem, location_elem, shipment_elem, condition_elem,
-                               category_elem]
-            return chosen_elements, seller_name, feedback_score
+            for element in [title_elem, price_elem, location_elem, condition_elem, category_elem, seller_name,
+                            feedback_score]:
+                if element is None:
+                    logging.warning('Missing data for item. Item skipped.')
+                    return 'NULL'
+            if shipment_elem is None and freeshipping_elem is None:
+                return 'NULL'
+            return element_parsing(title_elem, price_elem, location_elem, condition_elem, category_elem, seller_name,
+                                   feedback_score, shipment_elem, freeshipping_elem, item_soup)
 
 
 def concentrating_data(link_list, page_no):
     """
-    Receives a list of links to product pages and the page No., and prints
-    their retrieved data.
+    Receives a list of links to product pages and the page No., uses a function to retrieve data and
+    sends it to a storing function.
     """
     for link in link_list:
         prod_data_and_sell_link = get_item_data(link)
-        product_data = prod_data_and_sell_link[CON["ITEM_DATA"]]
-        seller_name = prod_data_and_sell_link[CON["SELLER_NAME"]]
-        seller_score = prod_data_and_sell_link[CON["SELLER_SCORE"]]
+        if prod_data_and_sell_link == 'NULL':
+            continue
+        try:
+            product_data = prod_data_and_sell_link[CON["ITEM_DATA"]]
+        except TypeError:
+            logging.warning('Problematic link ignored.')
+        else:
+            seller_name = prod_data_and_sell_link[CON["SELLER_NAME"]]
+            seller_score = prod_data_and_sell_link[CON["SELLER_SCORE"]]
 
-        storing_data(product_data, seller_name, seller_score, page_no)
+            storing_data(product_data, seller_name, seller_score, page_no)
 
 
 def collect_links(product_items):
@@ -314,10 +307,11 @@ def ebay_access(url, no_of_scraped_pages):
             logging.info(f"Entered item page.")
             soup = BeautifulSoup(page.content, 'html.parser')
             results = soup.find(id="mainContent")
-            product_items = results.find_all(TAG["each_product_tag"], class_=TAG["each_product_class"])
-            links = collect_links(product_items)
-            concentrating_data(links, page_no - 1)
-            url = url[:CON["PAGE_NO"]] + str(page_no)
+            if results is not None:
+                product_items = results.find_all(TAG["each_product_tag"], class_=TAG["each_product_class"])
+                links = collect_links(product_items)
+                concentrating_data(links, page_no - 1)
+                url = url[:CON["PAGE_NO"]] + str(page_no)
 
 
 class ScrapeIt:

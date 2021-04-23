@@ -80,8 +80,8 @@ WebScraping.py - Receives a list of search words and a number of pages to search
 and returns the data of all the results (products). The data returned are: product description, price, condition,
 shipping fee, product category, seller country, seller name, and seller rating score.
 
-There are 7 functions in the program and 1 main function, calling each other in the following order: 
-1. main => 2. ebay_access (=>  3. collect_links) => 4. concentrating_data => 5. get_item_data => 6. storing_data (=>  7. convert_currency) => 8. sql_execution  
+There are  functions in the program, 1 initiation class, and 1 main function, calling each other in the following order: 
+1. main (using the ScrapeIt class) => 2. ebay_access (=>  3. collect_links) => 4. concentrating_data => 5. get_item_data (=> 6. element_parsing) => 7. storing_data (=>  8. convert_currency) => 9. sql_execution  
                                                    
 ## Authors and Support
 Roy Yanovski - yanovskir@gmail.com
