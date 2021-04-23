@@ -72,63 +72,66 @@ def sql_execution(prod_name, price, country, ship_cost, condition, prod_category
                     logging.warning('Identical value found in unique field. No new entry.')
                 else:
                     connection.commit()
+        try:
+            with connection.cursor() as cursor:
+                query = QUE["get_seller_id"] % sell_name
+                cursor.execute(query)
+                results = cursor.fetchall()
+                for result in results:
+                    seller_id = result['seller_id']
+                connection.commit()
 
-        with connection.cursor() as cursor:
-            query = QUE["get_seller_id"] % sell_name
-            cursor.execute(query)
-            results = cursor.fetchall()
-            for result in results:
-                seller_id = result['seller_id']
-            connection.commit()
+            with connection.cursor() as cursor:
+                query = QUE["get_category_id"] % prod_category
+                cursor.execute(query)
+                results = cursor.fetchall()
+                for result in results:
+                    category_id = result['category_id']
+                connection.commit()
 
-        with connection.cursor() as cursor:
-            query = QUE["get_category_id"] % prod_category
-            cursor.execute(query)
-            results = cursor.fetchall()
-            for result in results:
-                category_id = result['category_id']
-            connection.commit()
+            with connection.cursor() as cursor:
+                query = QUE["get_country_id"] % country
+                cursor.execute(query)
+                results = cursor.fetchall()
+                for result in results:
+                    country_id = result['country_id']
+                connection.commit()
 
-        with connection.cursor() as cursor:
-            query = QUE["get_country_id"] % country
-            cursor.execute(query)
-            results = cursor.fetchall()
-            for result in results:
-                country_id = result['country_id']
-            connection.commit()
+            with connection.cursor() as cursor:
+                query = QUE["get_condition_id"] % condition
+                cursor.execute(query)
+                results = cursor.fetchall()
+                for result in results:
+                    condition_id = result['condition_id']
+                connection.commit()
 
-        with connection.cursor() as cursor:
-            query = QUE["get_condition_id"] % condition
-            cursor.execute(query)
-            results = cursor.fetchall()
-            for result in results:
-                condition_id = result['condition_id']
-            connection.commit()
+            with connection.cursor() as cursor:
+                query = QUE["insert_to_products"] % (seller_id, category_id, country_id, condition_id, prod_name, price,
+                                                     ship_cost, page_no)
+                cursor.execute(query)
+                connection.commit()
 
-        with connection.cursor() as cursor:
-            query = QUE["insert_to_products"] % (seller_id, category_id, country_id, condition_id, prod_name, price,
-                                                 ship_cost, page_no)
-            cursor.execute(query)
-            connection.commit()
+            with connection.cursor() as cursor:
+                query = QUE["get_product_id"] % (prod_name, seller_id)
+                cursor.execute(query)
+                results = cursor.fetchall()
+                for result in results:
+                    prod_id = result['product_id']
+                connection.commit()
 
-        with connection.cursor() as cursor:
-            query = QUE["get_product_id"] % (prod_name, seller_id)
-            cursor.execute(query)
-            results = cursor.fetchall()
-            for result in results:
-                prod_id = result['product_id']
-            connection.commit()
-
-        with connection.cursor() as cursor:
-            query = QUE["insert_to_currency"] % (
-                prod_id, cur_elem['IL'], cur_elem['US'], cur_elem['EU'], cur_elem['GB'],
-                cur_elem['China'], cur_elem['Russia'])
-            cursor.execute(query)
-            connection.commit()
-
-        logging.info('A record was successfully stored in db.')
-        print('A record was successfully stored in db.')
-        connection.close()
+            with connection.cursor() as cursor:
+                query = QUE["insert_to_currency"] % (
+                    prod_id, cur_elem['IL'], cur_elem['US'], cur_elem['EU'], cur_elem['GB'],
+                    cur_elem['China'], cur_elem['Russia'])
+                cursor.execute(query)
+                connection.commit()
+        except pymysql.err.ProgrammingError:
+            logging.error('A problem occurred while trying to store product details.')
+            connection.close()
+        else:
+            logging.info('A record was successfully stored in db.')
+            print('A record was successfully stored in db.')
+            connection.close()
     else:
         logging.info('Found a duplicate. Did not perform insert for this record.')
         print('A record was not stored.')
